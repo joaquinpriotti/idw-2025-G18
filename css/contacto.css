@@ -36,6 +36,7 @@ header h1 {
 
 nav ul {
     margin-top: 0px;
+    padding: 0;
 }
 
 nav li, a{
@@ -52,4 +53,8 @@ nav li, a{
 
 nav li :hover {
     color: #FFC857;
+}
+
+li {
+    list-style: none;
 }
