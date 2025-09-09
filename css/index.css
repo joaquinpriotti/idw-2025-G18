@@ -103,3 +103,23 @@ footer {
 footer p {
     color: inherit;
 }
+
+.contenedor-doctores{
+    display: flex;
+    flex-wrap: wrap;
+    width: 60%;
+    margin: 0px auto;
+    padding-bottom: 20px;
+}
+
+.contenedor-doctores img {
+    height: 250px;
+}
+
+.doctores-individual {
+    padding: 0px 20px;
+}
+
+.doctores-individual h3:hover {
+    color: #FFC857;
+}
