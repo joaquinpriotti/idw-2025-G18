@@ -65,7 +65,7 @@ h1, h2, h3 {
     color: #2C7FB8;
 }
 
-p {
+main p {
     color: #2F556B;
     width: 90%;
     max-width: 1200px;
@@ -93,11 +93,11 @@ li {
 }
 
 footer {
-    background-color: #2F556B;
-    color: #F5F2E7;
     text-align: center;
-    padding: 10px 0;
-    margin-top: auto;
+    background-color: #2F556B;
+    color: white;
+    padding: 1rem;
+    margin-top: 2rem;
 }
 
 footer p {
@@ -106,6 +106,7 @@ footer p {
 
 .contenedor-doctores{
     display: flex;
+    justify-content: space-around;
     flex-wrap: wrap;
     width: 60%;
     margin: 0px auto;
@@ -117,7 +118,7 @@ footer p {
 }
 
 .doctores-individual {
-    padding: 0px 20px;
+    padding: 0px 5px;
 }
 
 .doctores-individual h3:hover {
