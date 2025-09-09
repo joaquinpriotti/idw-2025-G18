@@ -2,6 +2,7 @@ body {
     background-color: #E6F2F8;
     color: #2F556B;
     margin: 0px;
+    font-family: Arial, Helvetica, sans-serif; 
 }
 
 header {
@@ -10,7 +11,6 @@ header {
     justify-content: center;
     color: #FFFFFF; 
     width: 100%;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 header section {
