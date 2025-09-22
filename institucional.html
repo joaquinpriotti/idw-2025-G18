@@ -4,26 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/institucional.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/institucional.css" type="text/css" media="screen"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Información Institucional - Clínica IDW S.A.</title>
 </head>
 
 <body>
-    <header>
+   <header class="container-fluid">
         <section>
-            <img src="favicon.svg" alt="Logo de la clínica" height="100px" />
+            <img src="favicon.svg" alt="Logo de la clinica" height="100px" />
             <h1>Clinica Medica</h1>
         </section>
     </header>
 
-    <nav>
-        <ul>
-            <li><a class="botinicio" href="index.html">Inicio</a></li>
-            <li><a class="botinst" href="institucional.html">Institucional</a></li>
-            <li><a class="botcont" href="contacto.html">Contacto</a></li>
+    <nav class="navbar navbar-expand-md" style="background-color: #2F556B;" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Menú</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="index.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link active" href="institucional.html">Institucional</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="contacto.html">Contacto</a>
+            </li>
         </ul>
+        
+        </div>
+    </div>
     </nav>
-
     <main>
         <h1>Quienes somos</h1>
 
