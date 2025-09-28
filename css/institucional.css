@@ -33,6 +33,11 @@ nav {
     justify-content: center;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+.botinst {
+    color: #FFC857;
+}
+
 header h1 {
     align-self: center;
     margin-left: 0px;
