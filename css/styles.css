@@ -96,3 +96,11 @@ header {
 .contacto-form button:hover {
   background-color: #2C7FB8;
 }
+
+li {
+  list-style-type: none;
+}
+
+ul {
+  padding-left: 0px !important;
+}
