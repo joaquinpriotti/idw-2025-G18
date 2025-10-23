@@ -29,7 +29,7 @@
                         <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
                         <li class="nav-item"><a class="nav-link" href="institucional.html">Institucional</a></li>
                         <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
-                        <li class="nav-item"><a class="nav-link" href="login.html">Iniciar sesión</a></li>
+                        <li id="botonDinamico" class="nav-item"><a class="nav-link" href="login.html">Iniciar sesión</a></li>
                     </ul>
                 </div>
             </div>
@@ -57,9 +57,40 @@
                     <label for="especialidadAlta" class="form-label">Especialidad</label>
                     <input id="especialidadAlta" name="especialidadAlta" type="text" class="form-control form-control-lg" placeholder="Especialidad">
                 </div>
-                <button id="botonAlta"class="btn btn-primary" type="submit">Dar de alta</button>
+                <div class="d-grid margin-2">
+                    <button class="btn btn-primary margin-bottom-2" type="submit">Confirmar</button>
+                </div>
             </form>
         </main>
+
+        <section class ="container my-5 border p-4 rounded-3 shadow">
+            <h3 class = "mb-3">Tabla de Medicos </h3>
+            <div class = "table-responsive-sm ">
+                <table class="table table-bordered align-middle " id ="tabla_Medicos">
+                    <thead class = "table-success">
+                        <tr>
+                            <th>Nombre y Apellido</th>
+                            <th>DNI</th>
+                            <th>Especialidad</th>
+                            <th>Obra Social</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpotabla">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button class = "btn btn-primary" id = "editar">Editar</button>
+                                <button class="btn btn-danger" id="eliminar" >Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
         <footer class="footer">
             <p>&copy; T.F.I. | Introducción al Desarrollo Web - 2025</p>
