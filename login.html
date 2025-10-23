@@ -1,67 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Iniciar sesión - Clínica Médica</title>
-        <link rel="stylesheet" href="css/styles.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión - Clínica Médica</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-    <body>
+<body>
 
-        <header class="container-fluid text-white py-3">
-            <div class="d-flex align-items-center">
-                <img src="favicon.svg" alt="Logo de la clínica" height="60">
-                <h1 class="ms-3">Clínica Médica</h1>
+    <header class="container-fluid text-white py-3">
+        <div class="d-flex align-items-center">
+            <img src="favicon.svg" alt="Logo de la clínica" height="60">
+            <h1 class="ms-3">Clínica Médica</h1>
+        </div>
+    </header>
+
+    <nav class="navbar navbar-expand-md navbar-dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Mostrar menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="institucional.html">Institucional</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+                    <div id="botonAdmin"></div>
+                    <div id="botonDinamico"></div>
+                </ul>
             </div>
-        </header>
+        </div>
+    </nav>
 
-        <nav class="navbar navbar-expand-md navbar-dark">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Mostrar menú">
-                    <span class="navbar-toggler-icon"></span>
-                </button>              
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="institucional.html">Institucional</a></li>
-                        <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
-                        <li id="botonDinamico" class="nav-item"><a class="nav-link" href="login.html">Iniciar sesión</a></li>
-                    </ul>
-                </div>
+    <main class="container my-5">
+        <h1 class="text-center mb-4 text-primary">Iniciar sesión</h1>
+
+        <form id="login" class="contacto-form">
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario</label>
+                <input id="usuario" name="usuario" type="text" class="form-control form-control-lg"
+                    placeholder="Nombre de usuario" required>
             </div>
-        </nav>
+            <div class="mb-3">
+                <label for="contraseña" class="form-label">Contraseña</label>
+                <input id="contraseña" name="contraseña" type="text" class="form-control form-control-lg"
+                    placeholder="*********" required>
+            </div>
+            <div class="d-grid margin-2">
+                <button class="btn btn-primary margin-bottom-2" type="submit">Iniciar sesión</button>
+            </div>
+            <div id="mensaje" class="alert text-center" role="alert"></div>
+        </form>
+    </main>
 
-        <main class="container my-5">
-            <h1 class="text-center mb-4 text-primary">Iniciar sesión</h1>
+    <footer class="footer">
+        <p>&copy; T.F.I. | Introducción al Desarrollo Web - 2025</p>
+    </footer>
 
-            <form id="login"class="contacto-form">
-                <div class="mb-3">
-                    <label for="usuario" class="form-label">Usuario</label>
-                    <input id="usuario" name="usuario" type="text" class="form-control form-control-lg"
-                        placeholder="Nombre de usuario" required>
-                </div>
-                <div class="mb-3">
-                    <label for="contraseña" class="form-label">Contraseña</label>
-                    <input id="contraseña" name="contraseña" type="text" class="form-control form-control-lg" placeholder="*********" required>
-                </div>
-                <div class="d-grid margin-2">
-                    <button class="btn btn-primary margin-bottom-2" type="submit">Iniciar sesión</button>
-                </div>
-                <div id="mensaje" class="alert text-center" role="alert"></div>
-            </form>
-        </main>
-
-        <footer class="footer">
-            <p>&copy; T.F.I. | Introducción al Desarrollo Web - 2025</p>
-        </footer>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="js/login.js"></script>
-        <script src="js/usuarios.js"></script>
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/usuarios.js"></script>
+</body>
 
 </html>
