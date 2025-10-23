@@ -1,127 +1,215 @@
 import { MEDICO_DATOS_INICIALES, STORAGE_KEY } from './medicosData.js';
 
-const logeado = sessionStorage.getItem("usuarioLogeado");
+// Estado local
+let medicos = [];
+let editingId = null;
 
-if (logeado !== "admin") {
-    // Si no es admin, redirige inmediatamente.
-let iniciarSesion = document.getElementById("botonDinamico");
+// DOM
+const formulario = document.getElementById('formularioAlta');
+const tbody = document.getElementById('medicos-tbody');
+const btnCancelar = document.getElementById('btnCancelar');
 
-if(logeado === "admin"){
-    alert("Bienvenido admin");
-} else {
-    alert("Lo sentimos, no posee privilegios para acceder a esta sección");
-    window.location.href = "login.html";
+function init() {
+    cargarMedicos();
+    mostrarTabla();
+    bindEvents();
 }
 
-let medicos = [];
-
-const guardarMedicos = () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(medicos));
-};
-
-// funcion del listado 
-
-const mostrarTabla = () => {
-    const tbody = document.getElementById('medicos-tbody');
-    if (!tbody) return; 
-
-    tbody.innerHTML = '';
-
-    medicos.forEach((medico) => {
-        const row = tbody.insertRow();
-        
-        row.insertCell().textContent = medico.matricula;
-        row.insertCell().textContent = medico.nombre;
-        row.insertCell().textContent = medico.especialidad;
-        row.insertCell().textContent = medico.telefono;
-    });
-};
-
-// Funcion para cargar los medicos 
-
-/** carga los médicos de LocalStorage o lo inicializa si es la primera vez.
- */
-const cargarMedicos = () => {
-    const storedMedicos = localStorage.getItem(STORAGE_KEY);
-    
-    if (storedMedicos) {
-        medicos = JSON.parse(storedMedicos);
-    } else {
-        medicos = MEDICO_DATOS_INICIALES;
-        guardarMedicos(); 
-    }
-    
-    mostrarTabla();
-};
-
-// funcion de alta o agregar 
-
-const agregarMedico = (event) => {
-    event.preventDefault(); 
-    const form = event.target;
-    
-    const nombre = document.getElementById('nombre-medico').value.trim();
-    const matricula = document.getElementById('matricula-medico').value.trim();
-    const especialidad = document.getElementById('especialidad-medico').value.trim();
-    const telefono = document.getElementById('telefono-medico').value.trim();
-
-    if (!nombre || !matricula || !especialidad) {
-        return alert("Faltan campos obligatorios.");
-    }
-
-    const nuevoMedico = {
-        id: Date.now(), // esto es un ID único para el futuro CRUD de joaco
-        matricula,
-        nombre,
-        especialidad,
-        telefono
-    };
-
-    medicos.push(nuevoMedico);
-    guardarMedicos(); 
-    mostrarTabla();  
-    form.reset();   
-};
-
-
-// inician los eventos 
-
-document.addEventListener('DOMContentLoaded', () => {
-    cargarMedicos();
-
-    const formulario = document.getElementById('form-alta-medico');
-    if (formulario) {
-        formulario.addEventListener('submit', agregarMedico);
-    }
-});
-function estaLogeado(){
-    const logeado = sessionStorage.getItem("usuarioLogeado");
-    const contenedorBoton = document.getElementById("botonDinamico");
-    
-    if(logeado === "admin" || logeado === "cliente"){
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Cerrar sesión</a></li>`;
-        
-        const otroBoton = document.getElementById("botonDinamico");
-        if (otroBoton) {
-            otroBoton.addEventListener("click", cerrarSesion);
+function cargarMedicos() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+        try {
+            medicos = JSON.parse(raw);
+        } catch (e) {
+            console.error('Error parseando médicos desde localStorage:', e);
+            medicos = MEDICO_DATOS_INICIALES.slice();
+            guardarMedicos();
         }
     } else {
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Iniciar sesión</a></li>`;
+        // primer ingreso: inicializa con los datos base
+        medicos = MEDICO_DATOS_INICIALES.slice();
+        guardarMedicos();
     }
 }
 
-function cerrarSesion(event){
+function guardarMedicos() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(medicos));
+}
 
-    event.preventDefault(); 
-    
-    let logeado = sessionStorage.getItem("usuarioLogeado");
+function mostrarTabla() {
+    // limpia la tabla
+    tbody.innerHTML = '';
 
-    if(logeado === "admin" || logeado === "cliente"){
-        sessionStorage.removeItem("usuarioLogeado");
-        window.location.reload();
+    if (!medicos || medicos.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="7" class="text-center">No hay médicos registrados</td>`;
+        tbody.appendChild(tr);
+        return;
+    }
+
+    medicos.forEach((m) => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+      <td>${escapeHtml(m.nombre || '')}</td>
+      <td>${escapeHtml(m.dni || '')}</td>
+      <td>${escapeHtml(m.matricula || '')}</td>
+      <td>${escapeHtml(m.especialidad || '')}</td>
+      <td>${escapeHtml(m.obraSocial || '')}</td>
+      <td>${escapeHtml(m.telefono || '')}</td>
+      <td>
+        <button class="btn btn-sm btn-info ver-btn" data-id="${m.id}">Ver</button>
+        <button class="btn btn-sm btn-primary editar-btn" data-id="${m.id}">Editar</button>
+        <button class="btn btn-sm btn-danger eliminar-btn" data-id="${m.id}">Eliminar</button>
+      </td>
+    `;
+        tbody.appendChild(tr);
+    });
+
+    // agrega eventos dinámicos
+    tbody.querySelectorAll('.editar-btn').forEach(b => b.addEventListener('click', onEditar));
+    tbody.querySelectorAll('.eliminar-btn').forEach(b => b.addEventListener('click', onEliminar));
+    tbody.querySelectorAll('.ver-btn').forEach(b => b.addEventListener('click', onVer));
+}
+
+function onVer(e) {
+    const id = parseInt(e.currentTarget.dataset.id, 10);
+    const m = medicos.find(x => x.id === id);
+    if (!m) return;
+    // muestra en un alert
+    alert(
+        `Médico:\nNombre: ${m.nombre}\nDNI: ${m.dni}\nMatrícula: ${m.matricula}\nEspecialidad: ${m.especialidad}\nObra Social: ${m.obraSocial || '-'}\nTeléfono: ${m.telefono || '-'}`
+    );
+}
+
+function onEditar(e) {
+    const id = parseInt(e.currentTarget.dataset.id, 10);
+    const m = medicos.find(x => x.id === id);
+    if (!m) return;
+
+    // llena el formulario con los datos
+    editingId = id;
+    document.getElementById('medicoId').value = id;
+    document.getElementById('nombreAlta').value = m.nombre || '';
+    document.getElementById('dniAlta').value = m.dni || '';
+    document.getElementById('matriculaAlta').value = m.matricula || '';
+    document.getElementById('especialidadAlta').value = m.especialidad || '';
+    document.getElementById('telefonoAlta').value = m.telefono || '';
+    document.getElementById('obrasocialAlta').value = m.obraSocial || '';
+
+    document.getElementById('nombreAlta').scrollIntoView({ behavior: 'smooth' });
+}
+
+function onEliminar(e) {
+    const id = parseInt(e.currentTarget.dataset.id, 10);
+    if (!confirm('¿Eliminar este médico? Esta acción no se puede deshacer.')) return;
+    medicos = medicos.filter(x => x.id !== id);
+    guardarMedicos();
+    mostrarTabla();
+}
+
+function bindEvents() {
+    if (formulario) {
+        formulario.addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            const idHidden = document.getElementById('medicoId').value;
+            if (idHidden) {
+                actualizarMedico(parseInt(idHidden, 10));
+            } else {
+                agregarMedico();
+            }
+        });
+    }
+
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', () => {
+            resetForm();
+        });
     }
 }
-estaLogeado();
-//iniciarSesion.addEventListener("click", cerrarSesion);
+
+// creación
+function generarId() {
+    const max = medicos.reduce((acc, x) => (x.id > acc ? x.id : acc), 100);
+    return max + 1;
+}
+
+function agregarMedico() {
+    const nombre = document.getElementById('nombreAlta').value.trim();
+    const dni = document.getElementById('dniAlta').value.trim();
+    const matricula = document.getElementById('matriculaAlta').value.trim();
+    const especialidad = document.getElementById('especialidadAlta').value.trim();
+    const telefono = document.getElementById('telefonoAlta').value.trim();
+    const obraSocial = document.getElementById('obrasocialAlta').value.trim();
+
+    // validación
+    if (!nombre || !dni || !especialidad) {
+        alert('Por favor complete los campos obligatorios: Nombre, DNI y Especialidad.');
+        return;
+    }
+
+    const nuevo = {
+        id: generarId(),
+        matricula: matricula || '',
+        nombre,
+        dni,
+        especialidad,
+        telefono: telefono || '',
+        obraSocial: obraSocial || ''
+    };
+
+    medicos.push(nuevo);
+    guardarMedicos();
+    mostrarTabla();
+    resetForm();
+}
+
+// actualización
+function actualizarMedico(id) {
+    const index = medicos.findIndex(x => x.id === id);
+    if (index === -1) return alert('No se encontró el médico a actualizar.');
+
+    const nombre = document.getElementById('nombreAlta').value.trim();
+    const dni = document.getElementById('dniAlta').value.trim();
+    const matricula = document.getElementById('matriculaAlta').value.trim();
+    const especialidad = document.getElementById('especialidadAlta').value.trim();
+    const telefono = document.getElementById('telefonoAlta').value.trim();
+    const obraSocial = document.getElementById('obrasocialAlta').value.trim();
+
+    if (!nombre || !dni || !especialidad) {
+        alert('Por favor complete los campos obligatorios: Nombre, DNI y Especialidad.');
+        return;
+    }
+
+    medicos[index] = {
+        ...medicos[index],
+        nombre,
+        dni,
+        matricula,
+        especialidad,
+        telefono,
+        obraSocial
+    };
+
+    guardarMedicos();
+    mostrarTabla();
+    resetForm();
+}
+
+function resetForm() {
+    formulario.reset();
+    editingId = null;
+    document.getElementById('medicoId').value = '';
+}
+
+function escapeHtml(unsafe) {
+    if (unsafe === null || unsafe === undefined) return '';
+    return String(unsafe)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+init();
