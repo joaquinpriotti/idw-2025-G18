@@ -1,5 +1,14 @@
 import { MEDICO_DATOS_INICIALES, STORAGE_KEY } from './medicosData.js';
 
+let logeado = sessionStorage.getItem("usuarioLogeado");
+
+if (logeado === "admin") {
+    alert("Bienvenido admin");
+} else {
+    alert("Lo sentimos, no posee privilegios para acceder a esta sección");
+    window.location.href = "login.html";
+}
+
 // Estado local
 let medicos = [];
 let editingId = null;
