@@ -2,9 +2,7 @@ import { MEDICO_DATOS_INICIALES, STORAGE_KEY } from './medicosData.js';
 
 let logeado = sessionStorage.getItem("usuarioLogeado");
 
-let iniciarSesion = document.getElementById("botonDinamico");
-
-if(logeado === "admin"){
+if (logeado === "admin") {
     alert("Bienvenido admin");
 } else {
     alert("Lo sentimos, no posee privilegios para acceder a esta sección");
