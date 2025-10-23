@@ -1,92 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administración de Médicos</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Administración - Médicos</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 
 <body>
     <header class="container-fluid text-white py-3">
         <div class="d-flex align-items-center">
-            <img src="favicon.svg" alt="Logo de la clínica" height="60">
+            <img src="favicon.svg" alt="Logo" height="60" />
             <h1 class="ms-3">Clínica Médica - Administración</h1>
         </div>
     </header>
 
-    <nav class="navbar navbar-expand-md navbar-dark">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Mostrar menú">
-                <span class="navbar-toggler-icon"></span>
-            </button> 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="institucional.html">Institucional</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="admin.html">Admin. Médicos</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container my-5">
-        <h1 class="text-center mb-4 text-primary">Alta y Listado de Profesionales</h1>
-
-        <section class="mb-5 p-4 border rounded shadow-sm bg-white">
-            <h2 class="text-primary mb-3">Alta de Nuevo Médico</h2>
-            <form id="form-alta-medico">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="nombre-medico" class="form-label">Nombre y Apellido:</label>
-                        <input type="text" class="form-control" id="nombre-medico" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="matricula-medico" class="form-label">Matrícula:</label>
-                        <input type="text" class="form-control" id="matricula-medico" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="especialidad-medico" class="form-label">Especialidad:</label>
-                        <input type="text" class="form-control" id="especialidad-medico" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="telefono-medico" class="form-label">Teléfono:</label>
-                        <input type="tel" class="form-control" id="telefono-medico">
-                    </div>
-                    <div class="col-12 text-center mt-4">
-                        <button type="submit" class="btn btn-primary">Guardar Médico</button>
-                    </div>
-                </div>
-            </form>
+    <main class="container my-4">
+        <section>
+            <h2>Gestión de Médicos</h2>
+            <p>Esta vista utiliza el mismo módulo JS (listado y acciones). Podés abrir <a
+                    href="altaMedicos.html">Alta/Edición</a> para crear nuevos médicos.</p>
         </section>
 
-        <section class="p-4 border rounded shadow-sm bg-white">
-            <h2 class="text-primary mb-3">Listado de Profesionales</h2>
-            <div class="table-responsive"> 
-                <table class="table table-striped table-hover">
-                    <thead>
+        <section class="mt-4">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-success">
                         <tr>
                             <th>Matrícula</th>
                             <th>Nombre</th>
                             <th>Especialidad</th>
                             <th>Teléfono</th>
-                            </tr>
+                            <th>Acciones</th>
+                        </tr>
                     </thead>
                     <tbody id="medicos-tbody">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer text-center py-3">
         <p>&copy; T.F.I. | Introducción al Desarrollo Web - 2025</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="altaMedicos.js"></script>
+    <script type="module" src="js/altaMedicos.js"></script>
 </body>
+
 </html>
