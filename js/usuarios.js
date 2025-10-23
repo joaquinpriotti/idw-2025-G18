@@ -1,4 +1,4 @@
-usuarios = [
+const usuarios = [
     {
         usuario : "admin",
         contraseña : "admin",
