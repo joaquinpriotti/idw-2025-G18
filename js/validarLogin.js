@@ -1,14 +1,3 @@
-let logeado = sessionStorage.getItem("usuarioLogeado");
-
-let iniciarSesion = document.getElementById("botonDinamico");
-
-if(logeado === "admin"){
-    alert("Bienvenido admin");
-} else {
-    alert("Lo sentimos, no posee privilegios para acceder a esta sección");
-    window.location.href = "login.html";
-}
-
 function estaLogeado(){
     const logeado = sessionStorage.getItem("usuarioLogeado");
     const contenedorBoton = document.getElementById("botonDinamico");
@@ -39,4 +28,3 @@ function cerrarSesion(event){
     }
 }
 estaLogeado();
-//iniciarSesion.addEventListener("click", cerrarSesion);
