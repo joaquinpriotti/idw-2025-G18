@@ -66,6 +66,7 @@ function mostrarTabla() {
       <td>${escapeHtml(m.especialidad || '')}</td>
       <td>${escapeHtml(m.obraSocial || '')}</td>
       <td>${escapeHtml(m.telefono || '')}</td>
+      <td style="max-width: 100px; overflow: hidden">${escapeHtml(m.imagen || '')}</td>
       <td>
         <button class="btn btn-sm btn-info ver-btn" data-id="${m.id}">Ver</button>
         <button class="btn btn-sm btn-primary editar-btn" data-id="${m.id}">Editar</button>
@@ -105,6 +106,7 @@ function onEditar(e) {
     document.getElementById('especialidadAlta').value = m.especialidad || '';
     document.getElementById('telefonoAlta').value = m.telefono || '';
     document.getElementById('obrasocialAlta').value = m.obraSocial || '';
+    document.getElementById('imagenAlta').value = m.imagen || '';
 
     document.getElementById('nombreAlta').scrollIntoView({ behavior: 'smooth' });
 }
@@ -143,13 +145,38 @@ function generarId() {
     return max + 1;
 }
 
-function agregarMedico() {
+function archivoABase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file); // Inicia la lectura
+
+        reader.onload = () => resolve(reader.result); // Resuelve con la cadena Base64
+        reader.onerror = (error) => reject(error); // Rechaza si hay un error
+    });
+}
+
+async function agregarMedico() {
     const nombre = document.getElementById('nombreAlta').value.trim();
     const dni = document.getElementById('dniAlta').value.trim();
     const matricula = document.getElementById('matriculaAlta').value.trim();
     const especialidad = document.getElementById('especialidadAlta').value.trim();
     const telefono = document.getElementById('telefonoAlta').value.trim();
     const obraSocial = document.getElementById('obrasocialAlta').value.trim();
+
+    const inputImagen = document.getElementById('imagenAlta');
+    const archivoImagen = inputImagen.files[0];
+    let imagenBase64 = '';
+    
+    if (archivoImagen) {
+        try {
+            // Llama a la función asíncrona y espera el resultado Base64
+            imagenBase64 = await archivoABase64(archivoImagen);
+        } catch (error) {
+            console.error('Error al leer la imagen:', error);
+            alert('Hubo un error al procesar la imagen.');
+            return;
+        }
+    }
 
     // validación
     if (!nombre || !dni || !especialidad) {
@@ -164,7 +191,8 @@ function agregarMedico() {
         dni,
         especialidad,
         telefono: telefono || '',
-        obraSocial: obraSocial || ''
+        obraSocial: obraSocial || '',
+        imagen: imagenBase64,
     };
 
     medicos.push(nuevo);
@@ -174,7 +202,7 @@ function agregarMedico() {
 }
 
 // actualización
-function actualizarMedico(id) {
+async function actualizarMedico(id) {
     const index = medicos.findIndex(x => x.id === id);
     if (index === -1) return alert('No se encontró el médico a actualizar.');
 
@@ -184,6 +212,22 @@ function actualizarMedico(id) {
     const especialidad = document.getElementById('especialidadAlta').value.trim();
     const telefono = document.getElementById('telefonoAlta').value.trim();
     const obraSocial = document.getElementById('obrasocialAlta').value.trim();
+    const imagen = document.getElementById('imagenAlta').value.trim();
+
+    const inputImagen = document.getElementById('imagenAlta');
+    const archivoImagen = inputImagen.files[0];
+    let imagenBase64 = '';
+    
+    if (archivoImagen) {
+        try {
+            // Llama a la función asíncrona y espera el resultado Base64
+            imagenBase64 = await archivoABase64(archivoImagen);
+        } catch (error) {
+            console.error('Error al leer la imagen:', error);
+            alert('Hubo un error al procesar la imagen.');
+            return;
+        }
+    }
 
     if (!nombre || !dni || !especialidad) {
         alert('Por favor complete los campos obligatorios: Nombre, DNI y Especialidad.');
@@ -197,7 +241,8 @@ function actualizarMedico(id) {
         matricula,
         especialidad,
         telefono,
-        obraSocial
+        obraSocial,
+        imagen: imagenBase64,
     };
 
     guardarMedicos();
