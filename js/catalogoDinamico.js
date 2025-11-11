@@ -70,7 +70,7 @@ function mostrarCatalogo() {
         div.classList.add("col-lg-4");
         div.innerHTML = `
                 <div class="card h-100 shadow-sm">
-                    <img src="img/Doctor sin foto.jpg" class="card-img-top">
+                    <img src="${escapeHtml(m.imagen || "img/Doctor sin foto.jpg")}" class="card-img-top">
                     <div class="card-body text-center">
                         <h5 class="card-title">${escapeHtml(m.nombre || '')}</h5>
                         <p class="card-text">${escapeHtml(m.especialidad || '')}</p>
