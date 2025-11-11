@@ -40,7 +40,6 @@
     <main class="container my-5">
         <h2 class="text-center mb-4 text-primary">Alta y Administración de Médicos</h2>
 
-        <!-- Formulario -->
         <section class="mb-4">
             <form id="formularioAlta" class="row g-3">
                 <input type="hidden" id="medicoId" />
@@ -92,7 +91,6 @@
             </form>
         </section>
 
-        <!-- Tabla de medicos -->
         <section class="border p-3 rounded shadow-sm bg-white">
             <h3 class="mb-3">Tabla de Médicos</h3>
             <div class="table-responsive">
@@ -101,15 +99,16 @@
                         <tr>
                             <th>Nombre y Apellido</th>
                             <th>DNI</th>
-                            <th>Matrícula</th>
+                            <th class="d-none d-md-table-cell">Matrícula</th>
                             <th>Especialidad</th>
-                            <th>Obra Social</th>
-                            <th>Teléfono</th>
+                            <th class="d-none d-md-table-cell">Obra Social</th>
+                            <th class="d-none d-md-table-cell">Teléfono</th>
                             <th style="max-width: 100px;">Imagen</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="medicos-tbody"></tbody>
+                    <tbody id="medicos-tbody">
+                    </tbody>
                 </table>
             </div>
         </section>
