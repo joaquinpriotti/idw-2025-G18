@@ -1,10 +1,10 @@
 const usuarios = [
     {
-        usuario : "admin",
-        contraseña : "admin",
+        usuario: "admin",
+        contraseña: "admin",
     },
     {
-        usuario : "cliente",
-        contraseña : "cliente",
-    }   
-]
+        usuario: "cliente",
+        contraseña: "cliente",
+    }
+];
