@@ -9,21 +9,22 @@ import {
     STORAGE_KEY_OBRAS
 } from './medicosData.js';
 
-// ---- Control de acceso: solo admin ----
-const logeado = sessionStorage.getItem("usuarioLogeado");
+// Control de acceso: solo admin
+const rol = sessionStorage.getItem("rol");
 
 if (logeado !== "admin") {
-    alert("Lo sentimos, no posee privilegios para acceder a esta sección");
+    alert("Acceso restringido. Debes iniciar sesión como administrador.");
     window.location.href = "login.html";
 }
 
-// ---- Estado local ----
+
+// Estado local 
 let medicos = [];
 let especialidades = [];
 let obrasSociales = [];
 let editingId = null;
 
-// ---- DOM ----
+// DOM
 const formulario = document.getElementById('formularioAlta');
 const tbody = document.getElementById('medicos-tbody');
 const btnCancelar = document.getElementById('btnCancelar');
@@ -40,7 +41,7 @@ function init() {
     bindEvents();
 }
 
-// ---- Carga de datos desde localStorage ----
+// Carga de datos desde localStorage
 function cargarEspecialidades() {
     const raw = localStorage.getItem(STORAGE_KEY_ESPECIALIDADES);
     if (raw) {
@@ -101,7 +102,7 @@ function guardarMedicos() {
     localStorage.setItem(STORAGE_KEY_MEDICOS, JSON.stringify(medicos));
 }
 
-// ---- Selects dinámicos ----
+// Selects dinámicos
 function poblarSelects() {
     if (selectEspecialidad) {
         selectEspecialidad.innerHTML = '<option value="">Seleccione una especialidad</option>';
@@ -138,7 +139,7 @@ function obtenerNombresObras(ids) {
     return nombres.length ? nombres.join(', ') : '-';
 }
 
-// ---- Tabla de médicos ----
+// Tabla de médicos
 function mostrarTabla() {
     tbody.innerHTML = '';
 
@@ -152,7 +153,7 @@ function mostrarTabla() {
     medicos.forEach((m) => {
 
         let imagenCargada = "";
-        if(m.imagen === ""){
+        if (m.imagen === "") {
             imagenCargada = "No";
         } else {
             imagenCargada = "Si";
@@ -189,7 +190,7 @@ function mostrarTabla() {
     tbody.querySelectorAll('.eliminar-btn').forEach(b => b.addEventListener('click', onEliminar));
 }
 
-// ---- Acciones ----
+// Acciones
 function onVer(e) {
     const id = parseInt(e.currentTarget.dataset.id, 10);
     const m = medicos.find(x => x.id === id);
@@ -250,7 +251,7 @@ function onEliminar(e) {
     mostrarTabla();
 }
 
-// ---- Eventos globales ----
+// Eventos globales
 function bindEvents() {
     if (formulario) {
         formulario.addEventListener('submit', async (ev) => {
@@ -271,7 +272,7 @@ function bindEvents() {
     }
 }
 
-// ---- Utilidades de creación/actualización ----
+// Utilidades de creación/actualización
 function generarId() {
     const max = medicos.reduce((acc, x) => (x.id > acc ? x.id : acc), 100);
     return max + 1;
