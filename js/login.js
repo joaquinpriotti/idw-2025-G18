@@ -3,94 +3,90 @@
 
 import { usuarios } from './usuarios.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-    const formLogin = document.getElementById("formLogin");
-    const alertPlaceholder = document.getElementById("alertPlaceholder");
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formLogin');
+    const mensaje = document.getElementById('mensaje');
 
-    if (!formLogin) return; // Evita errores si no existe el formulario en la página
+    if (!form) return;
 
-    formLogin.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    // mostrar mensajes
+    function mostrarMensaje(text, tipo = 'info') {
+        mensaje.style.display = 'block';
+        mensaje.className = 'alert text-center'; // reseteo
+        if (tipo === 'success') mensaje.classList.add('alert-success');
+        else if (tipo === 'warning') mensaje.classList.add('alert-warning');
+        else if (tipo === 'danger') mensaje.classList.add('alert-danger');
+        else mensaje.classList.add('alert-info');
+        mensaje.textContent = text;
+    }
 
-        // Obtiene los datos ingresados en el formulario
-        const usuario = document.getElementById("usuario").value.trim();
-        const contraseña = document.getElementById("contraseña").value.trim();
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // <- evita el envío por GET y exposición en URL
 
-        // Chequeo que no existan campos vacíos
-        if (!usuario || !contraseña) {
-            mostrarMensaje("Debe completar todos los campos.", "warning");
+        const usuario = document.getElementById('usuario').value.trim();
+        const contrasena = document.getElementById('contrasena').value.trim();
+
+        if (!usuario || !contrasena) {
+            mostrarMensaje('Complete todos los campos.', 'warning');
             return;
         }
 
-        // Intentar validar usuario localmente (usuarios.js)
-        const userLocal = usuarios.find(
-            (u) => u.usuario === usuario && u.contraseña === contraseña
-        );
-
+        // Comprueba usuarios locales (de usuarios.js)
+        const userLocal = usuarios.find(u => u.usuario === usuario && u.contraseña === contrasena);
         if (userLocal) {
-            // Si existe, crear token local y definir rol según el usuario
-            const rol = usuario === "admin" ? "admin" : "cliente";
-            sessionStorage.setItem("accessToken", "token_local_" + Date.now());
-            sessionStorage.setItem("usuarioLogeado", userLocal.usuario);
-            sessionStorage.setItem("rol", rol);
-
-            mostrarMensaje("Inicio de sesión correcto (usuario local).", "success");
-            redirigirPorRol(rol);
-            return;
+            const rol = usuario === 'admin' ? 'admin' : 'cliente';
+            sessionStorage.setItem('accessToken', 'token_local_' + Date.now());
+            sessionStorage.setItem('usuarioLogeado', usuario);
+            sessionStorage.setItem('rol', rol);
+            mostrarMensaje('Inicio de sesión local correcto. Redirigiendo...', 'success');
+            return redirigirPorRol(rol);
         }
 
-        // Si no coincide usuario local, busca con API DummyJSON
+        // DummyJSON auth/login espera { username, password } y devuelve un token (en su API pública).
         try {
-            const resp = await fetch("https://dummyjson.com/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: usuario,
-                    password: contraseña
-                })
+            mostrarMensaje('Intentando iniciar sesión en servidor...', 'info');
+
+            const resp = await fetch('https://dummyjson.com/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: usuario, password: contrasena })
             });
 
-            const data = await resp.json();
-
-            // Verifica si la API devolvió correctamente un token
-            if (!resp.ok || !data.accessToken) {
-                mostrarMensaje("Credenciales incorrectas.", "danger");
+            if (!resp.ok) {
+                // muestra mensaje pero no revela detalles
+                mostrarMensaje('Usuario o contraseña inválidos (servidor).', 'danger');
                 return;
             }
 
-            // Guarda token y usuario en sessionStorage
-            sessionStorage.setItem("accessToken", data.accessToken);
-            sessionStorage.setItem("usuarioLogeado", usuario);
-            sessionStorage.setItem("rol", "cliente"); // Todos los DummyJSON son "cliente"
+            const data = await resp.json();
+            // DummyJSON devuelve un objeto
+            const token = data.token || data.accessToken || null;
+            if (!token) {
+                mostrarMensaje('Respuesta de autenticación inválida.', 'danger');
+                return;
+            }
 
-            mostrarMensaje("Inicio de sesión correcto. Redirigiendo...", "success");
-            redirigirPorRol("cliente");
+            // Guardar token y datos mínimos
+            sessionStorage.setItem('accessToken', token);
+            sessionStorage.setItem('usuarioLogeado', data.username || usuario);
 
+            // Damos rol "admin" solo si el usuario coincide con "admin" o segun criterio propio.
+            const rol = (data.username === 'admin' || usuario === 'admin') ? 'admin' : 'cliente';
+            sessionStorage.setItem('rol', rol);
+
+            mostrarMensaje('Login exitoso. Redirigiendo...', 'success');
+            return redirigirPorRol(rol);
         } catch (err) {
-            console.error("Error login:", err);
-            mostrarMensaje("Error al conectar con el servicio de autenticación.", "danger");
+            console.error('Error fetch login:', err);
+            mostrarMensaje('Error al comunicarse con el servidor de autenticación.', 'danger');
         }
     });
 
-    // Muestra un mensaje en pantalla (alerta Bootstrap)
-    function mostrarMensaje(mensaje, tipo) {
-        if (!alertPlaceholder) return;
-        alertPlaceholder.innerHTML = `
-            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
-                ${mensaje}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
-    }
-
-    // Redirige al usuario según su rol
     function redirigirPorRol(rol) {
+        // "redirigiendo" en para que el usuario vea el mensaje
         setTimeout(() => {
-            if (rol === "admin") {
-                window.location.href = "admin.html";
-            } else {
-                window.location.href = "index.html";
-            }
-        }, 1000);
+            if (rol === 'admin') window.location.href = 'admin.html';
+            else window.location.href = 'index.html';
+        }, 700);
     }
 });
