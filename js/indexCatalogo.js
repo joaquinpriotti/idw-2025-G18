@@ -1,7 +1,6 @@
 // --- Catálogo de médicos para visitantes (lee desde LocalStorage) ---
 
 import { MEDICO_DATOS_INICIALES, STORAGE_KEY_MEDICOS as STORAGE_KEY } from './medicosData.js';
-import { STORAGE_KEY_TURNOS as STORAGE_KEY } from './turnosData.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     inicializarLocalStorage();
