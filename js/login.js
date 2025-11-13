@@ -1,66 +1,96 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("login");
-    const mensaje = document.getElementById("mensaje");
+// Maneja el inicio de sesión local (usuarios.js) y remoto (DummyJSON API).
+// Guarda el token y el rol del usuario en sessionStorage.
 
-    form.addEventListener("submit", async (e) => {
+import { usuarios } from './usuarios.js';
+
+document.addEventListener("DOMContentLoaded", () => {
+    const formLogin = document.getElementById("formLogin");
+    const alertPlaceholder = document.getElementById("alertPlaceholder");
+
+    if (!formLogin) return; // Evita errores si no existe el formulario en la página
+
+    formLogin.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        // Obtiene los datos ingresados en el formulario
         const usuario = document.getElementById("usuario").value.trim();
         const contraseña = document.getElementById("contraseña").value.trim();
 
-        // Verifica usuario hardcodeado
-        const usuarioLocal = usuarios.find(
-            (u) => u.usuario === usuario && u.contraseña === contraseña
-        );
-
-        if (usuarioLocal) {
-            iniciarSesion(usuarioLocal.usuario, usuarioLocal.usuario === "admin" ? "admin" : "cliente");
+        // Chequeo que no existan campos vacíos
+        if (!usuario || !contraseña) {
+            mostrarMensaje("Debe completar todos los campos.", "warning");
             return;
         }
 
-        // Si no está en local, buscar en la API
+        // Intentar validar usuario localmente (usuarios.js)
+        const userLocal = usuarios.find(
+            (u) => u.usuario === usuario && u.contraseña === contraseña
+        );
+
+        if (userLocal) {
+            // Si existe, crear token local y definir rol según el usuario
+            const rol = usuario === "admin" ? "admin" : "cliente";
+            sessionStorage.setItem("accessToken", "token_local_" + Date.now());
+            sessionStorage.setItem("usuarioLogeado", userLocal.usuario);
+            sessionStorage.setItem("rol", rol);
+
+            mostrarMensaje("Inicio de sesión correcto (usuario local).", "success");
+            redirigirPorRol(rol);
+            return;
+        }
+
+        // Si no coincide usuario local, busca con API DummyJSON
         try {
-            const response = await fetch("https://dummyjson.com/users");
-            if (!response.ok) throw new Error("Error al conectarse a la API");
-            const data = await response.json();
+            const resp = await fetch("https://dummyjson.com/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: usuario,
+                    password: contraseña
+                })
+            });
 
-            // la API devuelve data.users
-            const usuarioApi = data.users.find(
-                (u) => u.username.toLowerCase() === usuario.toLowerCase()
-            );
+            const data = await resp.json();
 
-            if (usuarioApi && usuarioApi.password === contraseña) {
-                iniciarSesion(usuarioApi.username, "cliente");
-            } else {
-                mostrarMensaje("Usuario o contraseña incorrectos", "danger");
+            // Verifica si la API devolvió correctamente un token
+            if (!resp.ok || !data.accessToken) {
+                mostrarMensaje("Credenciales incorrectas.", "danger");
+                return;
             }
 
-        } catch (error) {
-            console.error("Error de conexión:", error);
-            mostrarMensaje("No se pudo conectar con el servidor.", "danger");
+            // Guarda token y usuario en sessionStorage
+            sessionStorage.setItem("accessToken", data.accessToken);
+            sessionStorage.setItem("usuarioLogeado", usuario);
+            sessionStorage.setItem("rol", "cliente"); // Todos los DummyJSON son "cliente"
+
+            mostrarMensaje("Inicio de sesión correcto. Redirigiendo...", "success");
+            redirigirPorRol("cliente");
+
+        } catch (err) {
+            console.error("Error login:", err);
+            mostrarMensaje("Error al conectar con el servicio de autenticación.", "danger");
         }
     });
 
-    // 🔹 funciones auxiliares
-    function iniciarSesion(nombreUsuario, rol) {
-        sessionStorage.setItem("accessToken", "token_simulado_" + Date.now());
-        sessionStorage.setItem("usuarioLogeado", nombreUsuario);
-        sessionStorage.setItem("rol", rol);
+    // Muestra un mensaje en pantalla (alerta Bootstrap)
+    function mostrarMensaje(mensaje, tipo) {
+        if (!alertPlaceholder) return;
+        alertPlaceholder.innerHTML = `
+            <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+    }
 
-        mostrarMensaje("Inicio de sesión exitoso. Redirigiendo...", "success");
-
+    // Redirige al usuario según su rol
+    function redirigirPorRol(rol) {
         setTimeout(() => {
             if (rol === "admin") {
                 window.location.href = "admin.html";
             } else {
                 window.location.href = "index.html";
             }
-        }, 1200);
-    }
-
-    function mostrarMensaje(texto, tipo) {
-        mensaje.className = `alert alert-${tipo} text-center`;
-        mensaje.textContent = texto;
-        mensaje.classList.remove("d-none");
+        }, 1000);
     }
 });
