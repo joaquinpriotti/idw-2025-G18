@@ -149,7 +149,15 @@ function mostrarTabla() {
         return;
     }
 
-    medicos.forEach(m => {
+    medicos.forEach((m) => {
+
+        let imagenCargada = "";
+        if(m.imagen === ""){
+            imagenCargada = "No";
+        } else {
+            imagenCargada = "Si";
+        }
+
         const tr = document.createElement('tr');
 
         const nombreCompleto = `${escapeHtml(m.apellido || '')}, ${escapeHtml(m.nombre || '')}`;
@@ -159,21 +167,20 @@ function mostrarTabla() {
         const imagenSrc = m.imagen || 'img/Doctor sin foto.jpg';
 
         tr.innerHTML = `
-            <td>${nombreCompleto}</td>
-            <td>${escapeHtml(m.matricula ?? '')}</td>
-            <td>${escapeHtml(especialidadNombre)}</td>
-            <td>${escapeHtml(obrasTexto)}</td>
-            <td>${valorTexto}</td>
-            <td style="max-width: 100px; overflow: hidden;">
-                <img src="${escapeHtml(imagenSrc)}" alt="Foto médico" class="img-fluid" style="max-height: 80px;">
-            </td>
-            <td>
-                <button class="btn btn-sm btn-info ver-btn" data-id="${m.id}">Ver</button>
-                <button class="btn btn-sm btn-primary editar-btn" data-id="${m.id}">Editar</button>
-                <button class="btn btn-sm btn-danger eliminar-btn" data-id="${m.id}">Eliminar</button>
-            </td>
-        `;
-
+      <td>${escapeHtml(m.nombre || '')}</td>
+      <td>${escapeHtml(m.dni || '')}</td>
+      <td>${escapeHtml(m.matricula || '')}</td>
+      <td>${escapeHtml(m.especialidad || '')}</td>
+      <td>${escapeHtml(m.obraSocial || '')}</td>
+      <td>${escapeHtml(m.telefono || '')}</td>
+      
+      <td style="max-width: 100px; overflow: hidden">${imagenCargada}</td>
+      <td>
+        <button class="btn btn-sm btn-info ver-btn" data-id="${m.id}">Ver</button>
+        <button class="btn btn-sm btn-primary editar-btn" data-id="${m.id}">Editar</button>
+        <button class="btn btn-sm btn-danger eliminar-btn" data-id="${m.id}">Eliminar</button>
+      </td>
+    `;
         tbody.appendChild(tr);
     });
 
