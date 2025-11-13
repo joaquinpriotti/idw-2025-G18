@@ -82,4 +82,4 @@ export const turnos_disponibles = [
     },
 ]
 
-export const STORAGE_KEY = "turnos_data"
+export const STORAGE_KEY = "turnos_data";

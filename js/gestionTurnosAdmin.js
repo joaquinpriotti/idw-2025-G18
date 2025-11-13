@@ -1,8 +1,9 @@
 import { turnos_disponibles, STORAGE_KEY } from './turnos.js';
+import { STORAGE_KEY_TURNOS as STORAGE_KEY } from './turnosData.js';
 
 let logeado = sessionStorage.getItem("usuarioLogeado");
 
-if(logeado === "admin"){
+if (logeado === "admin") {
     alert("Bienvenido admin");
 } else {
     alert("Lo sentimos, no posee privilegios para acceder a esta sección");
@@ -94,7 +95,6 @@ function onEditar(e) {
     document.getElementById('especialidadTurno').value = t.especialidad || '';
     document.getElementById('obrasocialTurno').value = t.obraSocial || '';
 
-    document.getElementById('nombreAlta').scrollIntoView({ behavior: 'smooth' });
 }
 
 function onEliminar(e) {
@@ -146,7 +146,7 @@ function agregarTurno() {
 
     const nuevo = {
         id: generarId(),
-        medico, 
+        medico,
         disponible: "Disponible",
         fecha,
         hora: horario,
@@ -178,8 +178,8 @@ async function actualizarTurnos(id) {
 
     turnos[index] = {
         ...turnos[index],
-        medico, 
-        disponible: "Diponible",
+        medico,
+        disponible: "Disponible",
         fecha,
         hora: horario,
         especialidad,

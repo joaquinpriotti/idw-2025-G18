@@ -1,4 +1,6 @@
 import { turnos_disponibles, STORAGE_KEY } from './turnos.js';
+import { STORAGE_KEY_RESERVAS } from './reservasData.js';
+import { STORAGE_KEY_TURNOS as STORAGE_KEY } from './turnosData.js';
 
 // Estado local
 let turnos = [];
@@ -9,6 +11,7 @@ const formulario = document.getElementById('formularioTurnos');
 const tbody = document.getElementById('turnos-tbody');
 const btnCancelar = document.getElementById('btnLimpiar');
 
+//  inicialización
 function init() {
     cargarTurnos();
     mostrarTabla();
@@ -35,8 +38,8 @@ function guardarTurnos() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(turnos));
 }
 
+// tabla
 function mostrarTabla() {
-    // limpia la tabla
     tbody.innerHTML = '';
 
     if (!turnos || turnos.length === 0) {
@@ -47,120 +50,210 @@ function mostrarTabla() {
     }
 
     turnos.forEach((t) => {
-
         const tr = document.createElement('tr');
 
         tr.innerHTML = `
-                <td>${escapeHtml(t.medico || '')}</td>
-                <td>${escapeHtml(t.disponible || '')}</td> 
-                <td>${escapeHtml(t.fecha || '')}</td>
-                <td>${escapeHtml(t.hora || '')}</td>
-                <td>${escapeHtml(t.especialidad || '')}</td>
-                <td>${escapeHtml(t.obraSocial || '')}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary guardar-btn" data-id="${t.id}">Guardar turno</button>
-                    <button class="btn btn-sm btn-danger cancelar-btn" data-id="${t.id}">Cancelar turno</button>
-                </td>
-            `;
+            <td>${escapeHtml(t.medico || '')}</td>
+            <td>${escapeHtml(t.disponible || '')}</td> 
+            <td>${escapeHtml(t.fecha || '')}</td>
+            <td>${escapeHtml(t.hora || '')}</td>
+            <td>${escapeHtml(t.especialidad || '')}</td>
+            <td>${escapeHtml(t.obraSocial || '')}</td>
+            <td>
+                <button class="btn btn-sm btn-primary guardar-btn" data-id="${t.id}">Guardar turno</button>
+                <button class="btn btn-sm btn-danger cancelar-btn" data-id="${t.id}">Cancelar turno</button>
+            </td>
+        `;
         tbody.appendChild(tr);
     });
 
-    // agrega eventos dinámicos
     tbody.querySelectorAll('.guardar-btn').forEach(b => b.addEventListener('click', obtenerTurno));
     tbody.querySelectorAll('.cancelar-btn').forEach(b => b.addEventListener('click', cancelarTurno));
     actualizarFiltroEspecialidades();
 }
 
+// reserva turno
 function obtenerTurno(e) {
     const idTurno = parseInt(e.currentTarget.dataset.id, 10);
-    
     const turnoSeleccionado = turnos.find(t => t.id === idTurno);
-
-    let valorTurno = calcularCosto(e);
 
     if (!turnoSeleccionado) {
         console.error('Error: Turno no encontrado con ID:', idTurno);
         return;
     }
-    
-    if (turnoSeleccionado.disponible === "Reservado"){
-        alert("El turno que desea guardar ya se encuentra reservado.");
+
+    if (turnoSeleccionado.disponible === "Reservado") {
+        alert("El turno ya está reservado.");
         return;
     }
 
+    const valorTurno = calcularCosto(e);
 
-    if (!confirm(`¿Desea guardar el turno para ${turnoSeleccionado.medico} el ${turnoSeleccionado.fecha}?
-    El valor del mismo es de $${valorTurno}.
-        `)) {
+    if (!confirm(`¿Desea reservar el turno para ${turnoSeleccionado.medico} el ${turnoSeleccionado.fecha}?
+Valor: $${valorTurno}`)) {
         return;
     }
+
+    // captura de datos del paciente
+    let paciente = prompt("Ingrese el nombre del paciente:", "");
+    if (paciente === null) return;
+    paciente = paciente.trim();
+    if (!paciente) {
+        alert("Debe ingresar un nombre válido.");
+        return;
+    }
+
+    let documento = prompt("Ingrese el número de documento (opcional):", "");
+    if (documento === null) documento = "";
+    documento = documento.trim();
+
+    // crear reserva
+    let reservasArray = [];
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY_RESERVAS);
+        reservasArray = raw ? JSON.parse(raw) : [];
+    } catch {
+        reservasArray = [];
+    }
+
+    const nuevaId = reservasArray.length > 0
+        ? Math.max(...reservasArray.map(r => Number(r.id || 0))) + 1
+        : 1;
+
+    const nuevaReserva = {
+        id: nuevaId,
+        paciente: paciente,
+        documento: documento || "-",
+        turnoId: turnoSeleccionado.id,
+        medico: turnoSeleccionado.medico,
+        especialidad: turnoSeleccionado.especialidad,
+        obraSocial: turnoSeleccionado.obraSocial,
+        fecha: turnoSeleccionado.fecha,
+        hora: turnoSeleccionado.hora || turnoSeleccionado.horario || "",
+        total: valorTurno
+    };
+
+    reservasArray.push(nuevaReserva);
+    localStorage.setItem(STORAGE_KEY_RESERVAS, JSON.stringify(reservasArray));
+
+    turnoSeleccionado.disponible = 'Reservado';
+    guardarTurnos();
+    mostrarTabla();
+    resetForm();
 
     alert(
-        `Su turno ha sido guardadoc con éxtio:
-        Médico: ${turnoSeleccionado.medico}.
-        Fecha: ${turnoSeleccionado.fecha}.
-        Horario: ${turnoSeleccionado.horario}.
-        Obra social: ${turnoSeleccionado.obraSocial}.
-        Valor: $${valorTurno}.       
-        `
-    )
-    turnoSeleccionado.disponible = 'Reservado';
-
-    
-    guardarTurnos();
-    mostrarTabla();
-    resetForm();
+        `Reserva confirmada:
+Paciente: ${nuevaReserva.paciente}
+Médico: ${nuevaReserva.medico}
+Fecha: ${nuevaReserva.fecha} - ${nuevaReserva.hora}
+Obra social: ${nuevaReserva.obraSocial}
+Valor final: $${valorTurno}`
+    );
 }
 
+// cancela turno
 function cancelarTurno(e) {
     const idTurno = parseInt(e.currentTarget.dataset.id, 10);
-    
     const turnoSeleccionado = turnos.find(t => t.id === idTurno);
 
     if (!turnoSeleccionado) {
-        console.error('Error: Turno no encontrado con ID:', idTurno);
+        console.error('Turno no encontrado');
         return;
     }
 
-    if (turnoSeleccionado.disponible === "Disponible"){
-        alert("El turno que desea cancelar ya se encuentra disponible.");
+    if (turnoSeleccionado.disponible === "Disponible") {
+        alert("El turno ya se encuentra disponible.");
         return;
     }
 
-    if (!confirm(`¿Desea cancelar el turno para ${turnoSeleccionado.medico} el ${turnoSeleccionado.fecha}?`)) {
+    if (!confirm(`¿Cancelar reserva del turno con ${turnoSeleccionado.medico}?`)) {
         return;
     }
 
-    turnoSeleccionado.disponible = 'Disponible';
+    // Libera turno
+    turnoSeleccionado.disponible = "Disponible";
 
+    // elimina la reserva asociada
+    let reservasArray = JSON.parse(localStorage.getItem(STORAGE_KEY_RESERVAS)) || [];
+    reservasArray = reservasArray.filter(r => r.turnoId !== idTurno);
+    localStorage.setItem(STORAGE_KEY_RESERVAS, JSON.stringify(reservasArray));
 
     guardarTurnos();
     mostrarTabla();
     resetForm();
 }
 
-function bindEvents() {
-    if (formulario) {
-        formulario.addEventListener('submit', (ev) => {
-            ev.preventDefault();
-            const idHidden = document.getElementById('turnosId').value;
-            if (idHidden) {
-                actualizarMedico(parseInt(idHidden, 10));
-            }
-        });
+// filtros
+document.getElementById('formularioTurnos').addEventListener('submit', function (event) {
+    event.preventDefault();
+    filtrarTurnos();
+});
+
+function filtrarTurnos() {
+    const fechaAFiltrar = document.getElementById('fechaFiltro').value;
+    const especialidadAFiltrar = document.getElementById('especialidadFiltro').value;
+    const obraSocialAFiltrar = document.getElementById('obrasocialFiltro').value;
+    const medicoAFiltrar = document.getElementById('medicoFiltro').value;
+
+    tbody.innerHTML = '';
+
+    const turnosFiltrados = turnos.filter(turno => {
+        return (!fechaAFiltrar || turno.fecha === fechaAFiltrar)
+            && (!especialidadAFiltrar || turno.especialidad === especialidadAFiltrar)
+            && (!obraSocialAFiltrar || turno.obraSocial === obraSocialAFiltrar)
+            && (!medicoAFiltrar || turno.medico === medicoAFiltrar);
+    });
+
+    if (turnosFiltrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center">No hay turnos que coincidan.</td></tr>`;
+        return;
     }
 
-    if (btnCancelar) {
-        btnCancelar.addEventListener('click', () => {
-            resetForm();
-        });
-    }
+    turnosFiltrados.forEach(t => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td>${escapeHtml(t.medico || '')}</td>
+            <td>${escapeHtml(t.disponible || '')}</td> 
+            <td>${escapeHtml(t.fecha || '')}</td>
+            <td>${escapeHtml(t.hora || '')}</td>
+            <td>${escapeHtml(t.especialidad || '')}</td>
+            <td>${escapeHtml(t.obraSocial || '')}</td>
+            <td>
+                <button class="btn btn-sm btn-primary guardar-btn" data-id="${t.id}">Guardar turno</button>
+                <button class="btn btn-sm btn-danger cancelar-btn" data-id="${t.id}">Cancelar turno</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('.guardar-btn').forEach(b => b.addEventListener('click', obtenerTurno));
+    tbody.querySelectorAll('.cancelar-btn').forEach(b => b.addEventListener('click', cancelarTurno));
 }
 
+function actualizarFiltroEspecialidades() {
+    const selectFiltro = document.getElementById('especialidadFiltro');
+
+    while (selectFiltro.options.length > 1) {
+        selectFiltro.remove(1);
+    }
+
+    if (!turnos || turnos.length === 0) return;
+
+    const especialidadesUnicas = [...new Set(turnos.map(t => t.especialidad))];
+
+    especialidadesUnicas.forEach(especialidad => {
+        const opt = document.createElement('option');
+        opt.value = especialidad;
+        opt.textContent = especialidad;
+        selectFiltro.appendChild(opt);
+    });
+}
+
+// eventos
 function resetForm() {
-    formulario.reset();
+    formulario?.reset();
     editingId = null;
-    document.getElementById('turnosId').value = '';
 }
 
 function escapeHtml(unsafe) {
@@ -173,137 +266,27 @@ function escapeHtml(unsafe) {
         .replaceAll("'", '&#039;');
 }
 
-init();
-
-
-document.getElementById('formularioTurnos').addEventListener('submit', function(event) {
-    event.preventDefault(); // Previene el envío por defecto
-
-    filtrarTurnos();
-    });
-
-function filtrarTurnos() {
-    const fechaAFiltrar = document.getElementById('fechaFiltro').value;
-    const especialidadAFiltrar = document.getElementById('especialidadFiltro').value;
-    const obraSocialAFiltrar = document.getElementById('obrasocialFiltro').value;
-    const medicoAFiltrar = document.getElementById('medicoFiltro').value;
-    const tbody = document.getElementById('turnos-tbody');
-    
-    tbody.innerHTML = ''; 
-
-    if (!turnos || !Array.isArray(turnos)) {
-        console.error("La variable 'turnos' no está definida o no es un array.");
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="7" class="text-center">Error: Datos de turnos no disponibles.</td>`;
-        tbody.appendChild(tr);
-        return;
-    }
-    
-    const turnosFiltrados = turnos.filter(turno => {
-
-        const coincideFecha = !fechaAFiltrar || turno.fecha === fechaAFiltrar;
-
-        const coincideEspecialidad = !especialidadAFiltrar || especialidadAFiltrar === "" || turno.especialidad === especialidadAFiltrar;
-
-        const coincideObraSocial = !obraSocialAFiltrar || obraSocialAFiltrar === "" || turno.obraSocial === obraSocialAFiltrar;
-
-        const coincideMedico = !medicoAFiltrar || medicoAFiltrar === "" || turno.medico === medicoAFiltrar;
-
-        return coincideFecha && coincideEspecialidad && coincideObraSocial && coincideMedico;
-    });
-
-    if (turnosFiltrados.length > 0) {
-        turnosFiltrados.forEach((t) => {
-            const tr = document.createElement('tr');
-
-            tr.innerHTML = `
-                <td>${escapeHtml(t.medico || '')}</td>
-                <td>${escapeHtml(t.disponible || '')}</td> 
-                <td>${escapeHtml(t.fecha || '')}</td>
-                <td>${escapeHtml(t.hora || '')}</td>
-                <td>${escapeHtml(t.especialidad || '')}</td>
-                <td>${escapeHtml(t.obraSocial || '')}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary guardar-btn" data-id="${t.id}">Guardar turno</button>
-                    <button class="btn btn-sm btn-danger cancelar-btn" data-id="${t.id}">Cancelar turno</button>
-                </td>
-            `;
-        tbody.appendChild(tr);
-    });
-
-    // agrega eventos dinámicos
-    tbody.querySelectorAll('.guardar-btn').forEach(b => b.addEventListener('click', obtenerTurno));
-    tbody.querySelectorAll('.cancelar-btn').forEach(b => b.addEventListener('click', cancelarTurno));
-    } else {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td colspan="7" class="text-center">No hay turnos disponibles que coincidan con los filtros.</td>`;
-        tbody.appendChild(tr);
-    }
-};
-
-function actualizarFiltroEspecialidades() {
-
-    const selectFiltro = document.getElementById('especialidadFiltro');
-    
-    while (selectFiltro.options.length > 1) {
-        selectFiltro.remove(1);
-    }
-    
-    if (!turnos || turnos.length === 0) {
-        return;
-    }
-    
-    const especialidadesUnicas = new Set();
-    
-    turnos.forEach(turno => {
-        if (turno.especialidad) {
-            especialidadesUnicas.add(turno.especialidad);
-        }
-    });
-    
-    especialidadesUnicas.forEach(especialidad => {
-        const nuevaOpcion = document.createElement('option');
-        nuevaOpcion.value = especialidad;
-        nuevaOpcion.textContent = especialidad;
-        
-        selectFiltro.appendChild(nuevaOpcion);
-    });
-}
-
+// calcular costo
 function calcularCosto(e) {
-
     const idTurno = parseInt(e.currentTarget.dataset.id, 10);
-    
-    const turnoSeleccionado = turnos.find(t => t.id === idTurno);
+    const turno = turnos.find(t => t.id === idTurno);
 
-    let costoTurno = 0
+    if (!turno) return 0;
 
-    if (!turnoSeleccionado) {
-        console.error('Error: Turno no encontrado con ID:', idTurno);
-        return;
+    let costo = 0;
+
+    switch (turno.especialidad) {
+        case "Cardiología": costo = 18000; break;
+        case "Dermatología": costo = 20000; break;
+        case "Traumatología": costo = 15000; break;
     }
 
-    switch(turnoSeleccionado.especialidad){
-        case "Cardiología": 
-            costoTurno += 18000;
-            break;
-        case "Dermatología": 
-            costoTurno += 20000;
-            break;
-        case "Traumatología": 
-            costoTurno += 15000;
-            break;
-    }
-    switch(turnoSeleccionado.obraSocial){
-        case "OSDE":
-            costoTurno = costoTurno-(costoTurno*25/100);
-            break;
-        case "PAMI":
-            costoTurno = costoTurno-(costoTurno*50/100);
-            break;
-        case "Particular":
-            break;
+    switch (turno.obraSocial) {
+        case "OSDE": costo *= 0.75; break;
+        case "PAMI": costo *= 0.50; break;
     }
 
-    return costoTurno
+    return costo;
 }
+
+init();
