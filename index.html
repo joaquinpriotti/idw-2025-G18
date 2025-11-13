@@ -7,6 +7,7 @@
     <title>Clínica Médica</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/validarLogin.js"></script>
 </head>
 
 <body>
@@ -33,6 +34,7 @@
                     <div id="botonDinamico"></div>
                 </ul>
             </div>
+        </div>
     </nav>
 
     <main class="text-center container-fluid my-4">
@@ -41,86 +43,10 @@
             de turnos médicos y encontrar al profesional de la salud que mejor se adapte a tus necesidades.
             Explora nuestro catálogo de médicos, especialidades y obras sociales.</p>
 
-        <!-- catalogo -->
-        <section class="container-fluid my-4">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="CardiologoWeb.png" class="card-img-top" alt="Dr. Martín Gómez - Cardiólogo">
-                        <div class="card-body">
-                            <h5 class="card-title">Dr. Martín Gómez</h5>
-                                <ul>
-                                    <li><span class = "fw-bold">Especialidad:</span> Cardiólogo</li>
-                                    <li><span class="fw-bold">Horarios: </span> Lunes a Viernes de 9:00 a 17:00</li>
-                                    <li><span class="fw-bold">Telefono: </span> +54 39 1234-5678</li>
-                                    <li><span class="fw-bold">Email: </span> martin.gomez@clinicaidw.com</li>
-                                    <li><span class="fw-bold">Obra Social: </span> <span class ="badge text-bg-primary" >OSDE</span></li>
-                                </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="PediatraWeb.png" class="card-img-top" alt="Dra. Laura Pérez - Pediatra">
-                        <div class="card-body">
-                            <h5 class="card-title">Dra. Laura Pérez</h5>
-                                <ul>
-                                    <li><span class = "fw-bold">Especialidad:</span> Pediatra</li>
-                                    <li><span class="fw-bold">Horarios: </span> Lunes a Viernes de 9:00 a 17:00</li>
-                                    <li><span class="fw-bold">Telefono: </span> +54 38 8765-4321</li>
-                                    <li><span class="fw-bold">Email: </span> laura.perez@clinicaidw.com</li>
-                                    <li><span class="fw-bold">Obra Social: </span> <span class ="badge text-bg-success" >OSPIL</span></li>
-                                </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="GastroenterologoWeb.png" class="card-img-top"
-                            alt="Dr. Juan Rodríguez - Gastroenterólogo">
-                        <div class="card-body">
-                            <h5 class="card-title">Dr. Juan Rodríguez</h5>
-                                <ul>
-                                    <li><span class = "fw-bold">Especialidad:</span> Gastroenterólogo</li>
-                                    <li><span class="fw-bold">Horarios: </span> Martes a Jueves de 10:00 a 18:00 </li>
-                                    <li><span class="fw-bold">Telefono: </span> +54 38 8765-4321</li>
-                                    <li><span class="fw-bold">Email: </span>  juan.rodriguez@clinicaidw.com</li>
-                                    <li><span class="fw-bold">Obra Social: </span> <span class ="badge text-bg-info">Galeno</span></li>
-                                </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="Dermatologa.png" class="card-img-top" alt="Dra. Sofía Martínez - Dermatóloga">
-                        <div class="card-body">
-                            <h5 class="card-title">Dra. Sofía Martínez</h5>
-                                <ul>
-                                    <li><span class = "fw-bold">Especialidad:</span> Dermatóloga</li>
-                                    <li><span class="fw-bold">Horarios: </span> Miercoles y Viernes de 11:00 a 19:00 </li>
-                                    <li><span class="fw-bold">Telefono: </span> +54 22 3456-7890</li>
-                                    <li><span class="fw-bold">Email: </span>  sofia.martinez@clinicaidw.com</li>
-                                    <li><span class="fw-bold">Obra Social: </span> <span class ="badge text-bg-dark" >PAMI</span></li>
-                                </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card h-100">
-                        <img src="NeumonologoWeb.png" class="card-img-top" alt="Dr. Andrés López - Neumonólogo">
-                        <div class="card-body">
-                            <h5 class="card-title">Dr. Andrés López</h5>
-                                <ul>
-                                    <li><span class = "fw-bold">Especialidad:</span> Neumonólogo</li>
-                                    <li><span class="fw-bold">Horarios: </span> Viernes de 9:00 a 15:00</li>
-                                    <li><span class="fw-bold">Telefono: </span> +54 31 2345-6789</li>
-                                    <li><span class="fw-bold">Email: </span> andres.lopez@clinicaidw.com</li>
-                                    <li><span class="fw-bold">Obra Social: </span> <span class = "badge text-bg-danger">Swiss Medical</span></li>
-                                </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- catálogo -->
+        <section class="my-5">
+            <h2 class="text-center mb-4 text-primary">Nuestro Equipo de Profesionales</h2>
+            <div class="row g-4" id="catalogo-Medicos"></div>
         </section>
 
         <!-- carrusel -->
@@ -170,9 +96,11 @@
         <p>&copy; T.F.I. | Introducción al Desarrollo Web - 2025</p>
     </footer>
 
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/validarLogin.js"></script>
     <script type="module" src="js/catalogoDinamico.js"></script>
+    <script src="js/navbarLogin.js"></script>
 </body>
 
 </html>

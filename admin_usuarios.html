@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Administración - Usuarios</title>
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Clínica</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li id="botonAdmin" class="nav-item"></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li id="botonDinamico" class="nav-item"></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <h1>Usuarios registrados</h1>
+        <p class="text-muted">
+            Solo se muestran campos no sensibles: ID, nombre, apellido, edad y género.
+        </p>
+
+        <div id="alertPlaceholder" class="mb-3"></div>
+        <div id="tablaUsuarios" class="table-responsive"></div>
+    </main>
+
+    <footer class="footer mt-5">
+        <p class="text-center">&copy; T.F.I. | Introducción al Desarrollo Web - 2025</p>
+    </footer>
+
+    <script src="js/validarLogin.js"></script>
+    <script src="js/adminUsuarios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
