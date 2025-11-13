@@ -1,4 +1,4 @@
-// Maneja el inicio de sesión local (usuarios.js) y remoto (DummyJSON API).
+// Maneja el inicio de sesión local (usuarios.js) y API DummyJSON
 // Guarda el token y el rol del usuario en sessionStorage.
 
 import { usuarios } from './usuarios.js';
