@@ -159,26 +159,35 @@ function mostrarCatalogo() {
         const imagenSrc = m.imagen || "img/Doctor sin foto.jpg";
 
         div.innerHTML = `
-            <div class="card h-100 shadow-sm">
-                <img src="${escapeHtml(imagenSrc)}" class="card-img-top" alt="Foto médico">
-                <div class="card-body text-center">
-                    <h5 class="card-title">${escapeHtml(m.nombre || '')} ${escapeHtml(m.apellido || '')}</h5>
-                    <p class="card-text">${escapeHtml(especialidadNombre)}</p>
-                    <span class="badge bg-primary">${escapeHtml(obraPrincipal)}</span>
-                </div>
-                <div class="card-body text-center">
-                    <button 
-                        class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#medicoModal"
-                        data-nombre="${escapeHtml(m.nombre)} ${escapeHtml(m.apellido)}"
-                        data-descripcion="${escapeHtml(m.descripcion)}"
-                    >
-                        Ver más
-                    </button>
-                    <a href="turnosCliente.html">
-                        <button class="btn btn-primary">Turnos</button>
-                    </a>
+                <div class="card h-100 shadow-sm">
+                    <img src="${escapeHtml(m.imagen || "img/Doctor sin foto.jpg")}" class="card-img-top">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">${escapeHtml(m.nombre || '')}</h5>
+                        <p class="card-text">${escapeHtml(m.especialidad || '')}</p>
+                        <span class="badge bg-primary">${escapeHtml(m.obraSocial || '')}</span>
+                    </div>
+                    <div class="card-body text-center">
+                        <button 
+                            class="btn btn-outline-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#medicoModal"
+                            data-nombre="${escapeHtml(m.nombre)}"
+                            data-dni="${escapeHtml(m.dni)}"
+                            data-matricula="${escapeHtml(m.matricula)}"
+                            data-especialidad="${escapeHtml(m.especialidad)}"
+                            data-telefono="${escapeHtml(m.telefono)}"
+                            data-obrasocial="${escapeHtml(m.obraSocial)}"
+                            data-descripcion="${escapeHtml(m.descripcion)}"
+                        >
+                            Ver más
+                        </button>
+                        <a href="turnosCliente.html">
+                            <button class="btn btn-primary">
+                                Turnos
+                            </button>
+                        </a>
+                    </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -189,19 +198,29 @@ function mostrarCatalogo() {
 // Configuración del modal que muestra la descripción
 const medicoModal = document.getElementById('medicoModal');
 
-if (medicoModal) {
-    medicoModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // Botón que disparó el modal
-        const nombre = button.getAttribute('data-nombre');
-        const descripcion = button.getAttribute('data-descripcion');
+medicoModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; 
+
+    const nombre = button.getAttribute('data-nombre');
+    const descripcion = button.getAttribute('data-descripcion');
+    const dni = button.getAttribute('data-dni');
+    const matricula = button.getAttribute('data-matricula');
+    const especialidad = button.getAttribute('data-especialidad');
+    const telefono = button.getAttribute('data-telefono');
+    const obraSocial = button.getAttribute('data-obrasocial');
 
         // Inserta los datos en el contenido del modal
         const modalTitleSpan = document.getElementById('modalDescripcionTitle');
         const modalBody = document.getElementById('modalDescripcionBody');
 
-        modalTitleSpan.textContent = nombre;
-        modalBody.textContent = descripcion;
-    });
-}
+    modalTitleSpan.textContent = nombre;
+    modalBody.innerHTML = 
+        `<p>DNI: ${dni} <br>
+        MatrÍcula: ${matricula} <br>
+        Especialidad: ${especialidad}<br>
+        Telefono: ${telefono}<br>
+        ObraSocial: ${obraSocial}<br><br>
+        ${descripcion} </p>`;
+});
 
 init();
