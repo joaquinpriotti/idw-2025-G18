@@ -1,67 +1,66 @@
-const formularioLogin = document.getElementById("login");
-const usuario = document.getElementById("usuario");
-const contraseña = document.getElementById("contraseña");
-const mensaje = document.getElementById("mensaje");
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("login");
+    const mensaje = document.getElementById("mensaje");
 
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-function mostrarMensaje(texto, tipo){
-    
-    mensaje.innerHTML = `
-        <div id="mensaje" class="mb-3 margin-top-3">
-            <div class="alert alert-${tipo}" margin-top-3>${texto}</div>
-        </div>
-    `;
+        const usuario = document.getElementById("usuario").value.trim();
+        const contraseña = document.getElementById("contraseña").value.trim();
 
-}
+        // Verifica usuario hardcodeado
+        const usuarioLocal = usuarios.find(
+            (u) => u.usuario === usuario && u.contraseña === contraseña
+        );
 
-formularioLogin.addEventListener("submit", function(event){
-    event.preventDefault();
-
-    let usuarioImput = usuario.value.trim();
-    let contraseñaimput = contraseña.value.trim();
-
-    const isUsuario = usuarios.find(
-        u => u.usuario === usuarioImput && u.contraseña === contraseñaimput
-    );
-
-    if(isUsuario){
-        sessionStorage.setItem("usuarioLogeado", usuarioImput);
-        mostrarMensaje(`Has ingresado correctamente como ${usuario.value}`, "success")
-        window.location.href = "altaMedicos.html"
-    } else {
-        mostrarMensaje("Usuario o contraseña incorrectas", "danger");
-    }
-
-})
-
-function estaLogeado(){
-    const logeado = sessionStorage.getItem("usuarioLogeado");
-    const contenedorBoton = document.getElementById("botonDinamico");
-    
-    if(logeado === "admin" || logeado === "cliente"){
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Cerrar sesión</a></li>`;
-        
-        const otroBoton = document.getElementById("botonDinamico");
-        if (otroBoton) {
-            otroBoton.addEventListener("click", cerrarSesion);
+        if (usuarioLocal) {
+            iniciarSesion(usuarioLocal.usuario, usuarioLocal.usuario === "admin" ? "admin" : "cliente");
+            return;
         }
-    } else {
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Iniciar sesión</a></li>`;
+
+        // Si no está en local, buscar en la API
+        try {
+            const response = await fetch("https://dummyjson.com/users");
+            if (!response.ok) throw new Error("Error al conectarse a la API");
+            const data = await response.json();
+
+            // la API devuelve data.users
+            const usuarioApi = data.users.find(
+                (u) => u.username.toLowerCase() === usuario.toLowerCase()
+            );
+
+            if (usuarioApi && usuarioApi.password === contraseña) {
+                iniciarSesion(usuarioApi.username, "cliente");
+            } else {
+                mostrarMensaje("Usuario o contraseña incorrectos", "danger");
+            }
+
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            mostrarMensaje("No se pudo conectar con el servidor.", "danger");
+        }
+    });
+
+    // 🔹 funciones auxiliares
+    function iniciarSesion(nombreUsuario, rol) {
+        sessionStorage.setItem("accessToken", "token_simulado_" + Date.now());
+        sessionStorage.setItem("usuarioLogeado", nombreUsuario);
+        sessionStorage.setItem("rol", rol);
+
+        mostrarMensaje("Inicio de sesión exitoso. Redirigiendo...", "success");
+
+        setTimeout(() => {
+            if (rol === "admin") {
+                window.location.href = "admin.html";
+            } else {
+                window.location.href = "index.html";
+            }
+        }, 1200);
     }
-}
 
-function cerrarSesion(event){
-
-    event.preventDefault(); 
-    
-    let logeado = sessionStorage.getItem("usuarioLogeado");
-
-    if(logeado === "admin" || logeado === "cliente"){
-        sessionStorage.removeItem("usuarioLogeado");
-        window.location.reload();
+    function mostrarMensaje(texto, tipo) {
+        mensaje.className = `alert alert-${tipo} text-center`;
+        mensaje.textContent = texto;
+        mensaje.classList.remove("d-none");
     }
-}
-estaLogeado();
-
+});

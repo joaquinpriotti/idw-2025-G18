@@ -7,6 +7,7 @@
     <title>Administración - Médicos</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="js/validarLogin.js"></script>
 </head>
 
 <body>
@@ -18,37 +19,187 @@
     </header>
 
     <main class="container my-4">
-        <section>
-            <h2>Gestión de Médicos</h2>
-            <p>Esta vista utiliza el mismo módulo JS (listado y acciones). Podés abrir <a
-                    href="altaMedicos.html">Alta/Edición</a> para crear nuevos médicos.</p>
-        </section>
-
-        <section class="mt-4">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead class="table-success">
-                        <tr>
-                            <th>Matrícula</th>
-                            <th>Nombre</th>
-                            <th>Especialidad</th>
-                            <th>Teléfono</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="medicos-tbody">
-                    </tbody>
-                </table>
-            </div>
-        </section>
+    
+      <!-- Navegación -->
+      <ul class="nav nav-tabs mb-4" id="adminTabs">
+        <li class="nav-item"><button class="nav-link active" data-section="medicos">Médicos</button></li>
+        <li class="nav-item"><button class="nav-link" data-section="especialidades">Especialidades</button></li>
+        <li class="nav-item"><button class="nav-link" data-section="obras">Obras Sociales</button></li>
+        <li class="nav-item"><button class="nav-link" data-section="turnos">Turnos</button></li>
+        <li class="nav-item"><button class="nav-link" data-section="reservas">Reservas</button></li>
+      </ul>
+    
+    
+      <!-- profesionales/medicos -->
+      <section id="section-medicos">
+        <h2>Gestión de Médicos</h2>
+        <p>Alta, edición y eliminación de médicos.</p>
+    
+        <div id="contenedor-medicos"></div>
+      </section>
+    
+      <!-- especialidades -->
+      <section id="section-especialidades" class="d-none">
+        <h2>Gestión de Especialidades</h2>
+    
+        <form id="formEspecialidad" class="row g-3 mt-3">
+          <input type="hidden" id="especialidadId">
+    
+          <div class="col-md-6">
+            <label class="form-label">Nombre de especialidad</label>
+            <input id="especialidadNombre" type="text" class="form-control" required>
+          </div>
+    
+          <div class="col-md-6 d-flex align-items-end gap-2">
+            <button class="btn btn-success" type="submit">Guardar</button>
+            <button class="btn btn-secondary" type="button" id="cancelarEspecialidad">Cancelar</button>
+          </div>
+        </form>
+    
+        <table class="table table-bordered table-striped mt-4">
+          <thead class="table-success">
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyEspecialidades"></tbody>
+        </table>
+      </section>
+    
+      <!-- obras sociales -->
+      <section id="section-obras" class="d-none">
+        <h2>Gestión de Obras Sociales</h2>
+    
+        <form id="formObra" class="row g-3 mt-3">
+          <input type="hidden" id="obraId">
+    
+          <div class="col-md-4">
+            <label class="form-label">Nombre</label>
+            <input id="obraNombre" type="text" class="form-control" required>
+          </div>
+    
+          <div class="col-md-8">
+            <label class="form-label">Descripción</label>
+            <input id="obraDescripcion" type="text" class="form-control">
+          </div>
+    
+          <div class="col-12 d-flex gap-2">
+            <button class="btn btn-success" type="submit">Guardar</button>
+            <button class="btn btn-secondary" type="button" id="cancelarObra">Cancelar</button>
+          </div>
+        </form>
+    
+        <table class="table table-bordered table-striped mt-4">
+          <thead class="table-success">
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyObras"></tbody>
+        </table>
+      </section>
+    
+      <!-- Turnos -->
+      <section id="section-turnos" class="d-none">
+        <h2>Gestión de Turnos</h2>
+    
+        <form id="formTurno" class="row g-3 mt-3">
+          <input type="hidden" id="turnoId">
+    
+          <div class="col-md-4">
+            <label class="form-label">Médico</label>
+            <select id="turnoMedico" class="form-select" required></select>
+          </div>
+    
+          <div class="col-md-4">
+            <label class="form-label">Fecha</label>
+            <input id="turnoFecha" type="date" class="form-control" required>
+          </div>
+    
+          <div class="col-md-4">
+            <label class="form-label">Hora</label>
+            <input id="turnoHora" type="time" class="form-control" required>
+          </div>
+    
+          <div class="col-12 d-flex gap-2">
+            <button class="btn btn-success" type="submit">Guardar</button>
+            <button class="btn btn-secondary" type="button" id="cancelarTurno">Cancelar</button>
+          </div>
+        </form>
+    
+        <table class="table table-bordered table-striped mt-4">
+          <thead class="table-success">
+            <tr>
+              <th>ID</th>
+              <th>Médico</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Disponible</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyTurnos"></tbody>
+        </table>
+      </section>
+    
+      <!-- Reservas -->
+      <section id="section-reservas" class="d-none">
+        <h2>Listado de Reservas</h2>
+    
+        <table class="table table-bordered table-striped mt-4">
+          <thead class="table-success">
+            <tr>
+              <th>ID</th>
+              <th>Paciente</th>
+              <th>Documento</th>
+              <th>Turno</th>
+              <th>Obra Social</th>
+              <th>Especialidad</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyReservas"></tbody>
+        </table>
+      </section>
+    
     </main>
-
     <footer class="footer text-center py-3">
         <p>&copy; T.F.I. | Introducción al Desarrollo Web - 2025</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.querySelectorAll('#adminTabs button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const destino = btn.dataset.section;
+
+          document.querySelectorAll('main section').forEach(sec => sec.classList.add('d-none'));
+          document.getElementById(`section-${destino}`).classList.remove('d-none');
+
+          document.querySelectorAll('#adminTabs .nav-link').forEach(tab => tab.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    </script>
     <script type="module" src="js/altaMedicos.js"></script>
+    <script type="module" src="js/especialidades.js"></script>
+    <script type="module" src="js/obras.js"></script>
+    <script type="module" src="js/turnos.js"></script>
+    <script type="module" src="js/turnosData.js"></script>
+    <script type="module" src="js/reservasData.js"></script>
+    <script type="module" src="js/reservas.js"></script>
+
 </body>
 
 </html>
+
+<script src="js/validarLogin.js"></script>
+<script>
+    // protegerPaginaAdmin() redirige al login si no hay rol admin
+    if (typeof protegerPaginaAdmin === "function") protegerPaginaAdmin();
+</script>
