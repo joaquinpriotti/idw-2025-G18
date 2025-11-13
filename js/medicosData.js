@@ -8,6 +8,7 @@ export const MEDICO_DATOS_INICIALES = [
         telefono: '11-4567-8901',
         imagen: 'img/CardiologoWeb.png',
         obraSocial: 'Osde',
+        descripcion: "El Dr. Ricardo Pérez es oriundo de Santa Fe y es reconocido en gran parte del país."
     },
     {
         id: 102,
@@ -18,6 +19,7 @@ export const MEDICO_DATOS_INICIALES = [
         telefono: '11-3000-4000',
         imagen: 'img/PediatraWeb.png',
         obraSocial: 'SanCor',
+        descripcion: "La Dra. Ana López es oriunda de San Luis y es reconocida por su gran trabajo en los primeros años de los pacientes."
     }
 ];
 

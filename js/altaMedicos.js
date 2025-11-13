@@ -57,6 +57,14 @@ function mostrarTabla() {
     }
 
     medicos.forEach((m) => {
+
+        let imagenCargada = "";
+        if(m.imagen === ""){
+            imagenCargada = "No";
+        } else {
+            imagenCargada = "Si";
+        }
+
         const tr = document.createElement('tr');
 
         tr.innerHTML = `
@@ -66,7 +74,8 @@ function mostrarTabla() {
       <td>${escapeHtml(m.especialidad || '')}</td>
       <td>${escapeHtml(m.obraSocial || '')}</td>
       <td>${escapeHtml(m.telefono || '')}</td>
-      <td style="max-width: 100px; overflow: hidden">${escapeHtml(m.imagen || '')}</td>
+      
+      <td style="max-width: 100px; overflow: hidden">${imagenCargada}</td>
       <td>
         <button class="btn btn-sm btn-info ver-btn" data-id="${m.id}">Ver</button>
         <button class="btn btn-sm btn-primary editar-btn" data-id="${m.id}">Editar</button>
