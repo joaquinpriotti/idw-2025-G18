@@ -12,7 +12,7 @@ import {
 // Control de acceso: solo admin
 const rol = sessionStorage.getItem("rol");
 
-if (logeado !== "admin") {
+if (rol !== "admin") {
     alert("Acceso restringido. Debes iniciar sesión como administrador.");
     window.location.href = "login.html";
 }
