@@ -81,6 +81,11 @@ function mostrarCatalogo() {
                             data-bs-toggle="modal"
                             data-bs-target="#medicoModal"
                             data-nombre="${escapeHtml(m.nombre)}"
+                            data-dni="${escapeHtml(m.dni)}"
+                            data-matricula="${escapeHtml(m.matricula)}"
+                            data-especialidad="${escapeHtml(m.especialidad)}"
+                            data-telefono="${escapeHtml(m.telefono)}"
+                            data-obrasocial="${escapeHtml(m.obraSocial)}"
                             data-descripcion="${escapeHtml(m.descripcion)}"
                         >
                             Ver más
@@ -117,12 +122,23 @@ medicoModal.addEventListener('show.bs.modal', function (event) {
 
     const nombre = button.getAttribute('data-nombre');
     const descripcion = button.getAttribute('data-descripcion');
+    const dni = button.getAttribute('data-dni');
+    const matricula = button.getAttribute('data-matricula');
+    const especialidad = button.getAttribute('data-especialidad');
+    const telefono = button.getAttribute('data-telefono');
+    const obraSocial = button.getAttribute('data-obrasocial');
 
     const modalTitleSpan = document.getElementById('modalDescripcionTitle');
     const modalBody = document.getElementById('modalDescripcionBody');
 
     modalTitleSpan.textContent = nombre;
-    modalBody.textContent = descripcion;
+    modalBody.innerHTML = 
+        `<p>DNI: ${dni} <br>
+        MatrÍcula: ${matricula} <br>
+        Especialidad: ${especialidad}<br>
+        Telefono: ${telefono}<br>
+        ObraSocial: ${obraSocial}<br><br>
+        ${descripcion} </p>`;
 });
 
 init();

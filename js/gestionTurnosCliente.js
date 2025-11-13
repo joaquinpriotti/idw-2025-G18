@@ -76,6 +76,8 @@ function obtenerTurno(e) {
     
     const turnoSeleccionado = turnos.find(t => t.id === idTurno);
 
+    let valorTurno = calcularCosto(e);
+
     if (!turnoSeleccionado) {
         console.error('Error: Turno no encontrado con ID:', idTurno);
         return;
@@ -86,11 +88,22 @@ function obtenerTurno(e) {
         return;
     }
 
-    calcularCosto(e)
 
-    if (!confirm(`¿Desea guardar el turno para ${turnoSeleccionado.medico} el ${turnoSeleccionado.fecha}?`)) {
+    if (!confirm(`¿Desea guardar el turno para ${turnoSeleccionado.medico} el ${turnoSeleccionado.fecha}?
+    El valor del mismo es de $${valorTurno}.
+        `)) {
         return;
     }
+
+    alert(
+        `Su turno ha sido guardadoc con éxtio:
+        Médico: ${turnoSeleccionado.medico}.
+        Fecha: ${turnoSeleccionado.fecha}.
+        Horario: ${turnoSeleccionado.horario}.
+        Obra social: ${turnoSeleccionado.obraSocial}.
+        Valor: $${valorTurno}.       
+        `
+    )
     turnoSeleccionado.disponible = 'Reservado';
 
     
@@ -292,5 +305,5 @@ function calcularCosto(e) {
             break;
     }
 
-    alert(`El costo del turno es de $${costoTurno}`);
+    return costoTurno
 }
