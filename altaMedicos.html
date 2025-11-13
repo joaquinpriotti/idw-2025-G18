@@ -43,30 +43,32 @@
         <section class="mb-4">
             <form id="formularioAlta" class="row g-3">
                 <input type="hidden" id="medicoId" />
-            
+
                 <div class="col-md-4">
                     <label for="nombreAlta" class="form-label">Nombre</label>
-                    <input id="nombreAlta" name="nombreAlta" type="text" class="form-control" placeholder="Nombre" required />
-                </div>
-            
-                <div class="col-md-4">
-                    <label for="apellidoAlta" class="form-label">Apellido</label>
-                    <input id="apellidoAlta" name="apellidoAlta" type="text" class="form-control" placeholder="Apellido" required />
-                </div>
-            
-                <div class="col-md-4">
-                    <label for="matriculaAlta" class="form-label">Matrícula</label>
-                    <input id="matriculaAlta" name="matriculaAlta" type="number" class="form-control" placeholder="Matrícula"
+                    <input id="nombreAlta" name="nombreAlta" type="text" class="form-control" placeholder="Nombre"
                         required />
                 </div>
-            
+
+                <div class="col-md-4">
+                    <label for="apellidoAlta" class="form-label">Apellido</label>
+                    <input id="apellidoAlta" name="apellidoAlta" type="text" class="form-control" placeholder="Apellido"
+                        required />
+                </div>
+
+                <div class="col-md-4">
+                    <label for="matriculaAlta" class="form-label">Matrícula</label>
+                    <input id="matriculaAlta" name="matriculaAlta" type="number" class="form-control"
+                        placeholder="Matrícula" required />
+                </div>
+
                 <div class="col-md-4">
                     <label for="especialidadAlta" class="form-label">Especialidad</label>
                     <select id="especialidadAlta" name="especialidadAlta" class="form-select" required>
                         <!-- se completa dinámicamente desde JS -->
                     </select>
                 </div>
-            
+
                 <div class="col-md-4">
                     <label for="obrasSocialesAlta" class="form-label">Obras sociales que acepta</label>
                     <select id="obrasSocialesAlta" name="obrasSocialesAlta" class="form-select" multiple size="4">
@@ -74,25 +76,25 @@
                     </select>
                     <small class="text-muted">Mantené presionada Ctrl (o Cmd) para seleccionar varias.</small>
                 </div>
-            
+
                 <div class="col-md-4">
                     <label for="valorConsultaAlta" class="form-label">Valor de la consulta ($)</label>
                     <input id="valorConsultaAlta" name="valorConsultaAlta" type="number" min="0" class="form-control"
                         placeholder="Ej: 15000" required />
                 </div>
-            
+
                 <div class="col-12">
                     <label for="descripcionAlta" class="form-label">Descripción / Presentación</label>
                     <textarea id="descripcionAlta" name="descripcionAlta" class="form-control" rows="3"
                         placeholder="Breve descripción del profesional"></textarea>
                 </div>
-            
+
                 <div class="col-md-4">
                     <label for="imagenAlta" class="form-label">Fotografía del Médico</label>
                     <input class="form-control" type="file" id="imagenAlta" name="imagenAlta" accept="image/*">
                     <small class="text-muted">Si no se selecciona, se usa la imagen por defecto.</small>
                 </div>
-            
+
                 <div class="col-12 d-flex gap-2">
                     <button id="btnGuardar" type="submit" class="btn btn-success">Guardar</button>
                     <button id="btnCancelar" type="button" class="btn btn-secondary">Cancelar</button>
@@ -128,8 +130,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/validarLogin.js"></script>
-    <script type="module" src="js/altaMedicos.js"></script>
     <script src="js/navbarLogin.js"></script>
+    <script type="module" src="js/altaMedicos.js"></script>
 </body>
 
 </html>
