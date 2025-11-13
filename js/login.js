@@ -32,9 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Comprueba usuarios locales (de usuarios.js)
-        const userLocal = usuarios.find(u => u.usuario === usuario && u.contraseña === contrasena);
+        const userLocal = usuarios.find(u => {
+            const passProp = u.contrasena ?? u.contraseña ?? u.password ?? null;
+            return u.usuario === usuario && passProp === contrasena;
+        });
+
         if (userLocal) {
-            const rol = usuario === 'admin' ? 'admin' : 'cliente';
+            // Si el objeto local trae rol, usarlo; si no, decidir por nombre
+            const rol = userLocal.rol || (usuario === 'admin' ? 'admin' : 'cliente');
             sessionStorage.setItem('accessToken', 'token_local_' + Date.now());
             sessionStorage.setItem('usuarioLogeado', usuario);
             sessionStorage.setItem('rol', rol);
@@ -83,10 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function redirigirPorRol(rol) {
-        // "redirigiendo" en para que el usuario vea el mensaje
+        // "redirigiendo" para que el usuario vea el mensaje
         setTimeout(() => {
-            if (rol === 'admin') window.location.href = 'admin.html';
-            else window.location.href = 'index.html';
+            if (rol === 'admin') {
+                window.location.href = 'admin.html';
+            } else if (rol === 'cliente') {
+                window.location.href = 'turnosCliente.html';
+            } else {
+                window.location.href = 'index.html';
+            }
         }, 700);
     }
 });
