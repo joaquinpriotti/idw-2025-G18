@@ -1,3 +1,4 @@
+// Gestión de la carga de datos y muestra dinámicamente el catálogo de médicos en el HTML.
 
 import {
     MEDICO_DATOS_INICIALES,
@@ -9,9 +10,14 @@ import {
 } from './medicosData.js';
 
 let medicos = [];
+let especialidades = [];
+let obrasSociales = [];
 
+// Referencia al contenedor del catálogo en el HTML
 const catalogo = document.getElementById('catalogo-Medicos');
 
+// -----------------------------------------------------
+// Función principal de inicialización
 function init() {
     cargarEspecialidades();
     cargarObrasSociales();
@@ -19,7 +25,10 @@ function init() {
     mostrarCatalogo();
 }
 
-// carga los datos
+// ----------------------------------------
+// Funciones de carga y guardado en localStorage
+
+// Carga las especialidades desde localStorage o usa las iniciales
 function cargarEspecialidades() {
     const raw = localStorage.getItem(STORAGE_KEY_ESPECIALIDADES);
     if (raw) {
@@ -36,10 +45,12 @@ function cargarEspecialidades() {
     }
 }
 
+// Guarda las especialidades en localStorage
 function guardarEspecialidades() {
     localStorage.setItem(STORAGE_KEY_ESPECIALIDADES, JSON.stringify(especialidades));
 }
 
+// Carga las obras sociales desde localStorage o usa las iniciales
 function cargarObrasSociales() {
     const raw = localStorage.getItem(STORAGE_KEY_OBRAS);
     if (raw) {
@@ -56,10 +67,12 @@ function cargarObrasSociales() {
     }
 }
 
+// Guarda las obras sociales en localStorage
 function guardarObrasSociales() {
     localStorage.setItem(STORAGE_KEY_OBRAS, JSON.stringify(obrasSociales));
 }
 
+// Carga los médicos desde localStorage o usa los iniciales
 function cargarMedicos() {
     const raw = localStorage.getItem(STORAGE_KEY_MEDICOS);
     if (raw) {
@@ -76,44 +89,58 @@ function cargarMedicos() {
     }
 }
 
+// Guarda los médicos en localStorage
 function guardarMedicos() {
     localStorage.setItem(STORAGE_KEY_MEDICOS, JSON.stringify(medicos));
 }
 
+// Funciones auxiliares
+
+// Devuelve el nombre de la especialidad dado su ID
 function obtenerNombreEspecialidad(id) {
     const esp = especialidades.find(e => e.id === id);
     return esp ? esp.nombre : '';
 }
 
+// Devuelve el nombre de la primera obra social (si existe)
 function obtenerNombrePrimeraObra(ids) {
     if (!Array.isArray(ids) || ids.length === 0) return 'Particular';
     const obra = obrasSociales.find(o => ids.includes(o.id));
     return obra ? obra.nombre : 'Particular';
 }
 
-// catalogo
+// Evita inyecciones XSS reemplazando caracteres peligrosos
+function escapeHtml(unsafe) {
+    if (unsafe === null || unsafe === undefined) return '';
+    return String(unsafe)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
 function mostrarCatalogo() {
     if (!catalogo) return;
-
     catalogo.innerHTML = '';
 
+    // Si no hay médicos cargados, muestra un mensaje por defecto
     if (!medicos || medicos.length === 0) {
         catalogo.classList.replace("row", "d-flex");
         catalogo.classList.replace("g-4", "justify-content-center");
+
         const div = document.createElement('div');
         div.classList.add("col-12", "col-sm-6", "col-lg-4");
         div.innerHTML = `
-                <div class="card h-100 shadow-sm">
-                    <img src="img/Doctor sin foto.jpg" class="card-img-top">
-                    <div class="card-body text-center">
-                        <h5 class="card-title"> Aún no contamos con médicos</h5>
-                        <p class="card-text">Si queres formar parte de nuestro equipo</p>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#modal1">
-                                Contactanos
-                            </button>
-                        </div>
+            <div class="card h-100 shadow-sm">
+                <img src="img/Doctor sin foto.jpg" class="card-img-top" alt="Sin médicos">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Aún no contamos con médicos</h5>
+                    <p class="card-text">Si querés formar parte de nuestro equipo</p>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal1">
+                            Contactanos
+                        </button>
                     </div>
                 </div>
             </div>
@@ -122,6 +149,7 @@ function mostrarCatalogo() {
         return;
     }
 
+    // Si hay médicos, genera una card por cada uno
     medicos.forEach((m) => {
         const div = document.createElement('div');
         div.classList.add("col-12", "col-sm-6", "col-lg-4");
@@ -163,22 +191,11 @@ function mostrarCatalogo() {
                 </div>
             </div>
         `;
-        
-
         catalogo.appendChild(div);
     });
 }
 
-function escapeHtml(unsafe) {
-    if (unsafe === null || unsafe === undefined) return '';
-    return String(unsafe)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
-
+// Configuración del modal que muestra la descripción
 const medicoModal = document.getElementById('medicoModal');
 
 medicoModal.addEventListener('show.bs.modal', function (event) {
@@ -192,8 +209,9 @@ medicoModal.addEventListener('show.bs.modal', function (event) {
     const telefono = button.getAttribute('data-telefono');
     const obraSocial = button.getAttribute('data-obrasocial');
 
-    const modalTitleSpan = document.getElementById('modalDescripcionTitle');
-    const modalBody = document.getElementById('modalDescripcionBody');
+        // Inserta los datos en el contenido del modal
+        const modalTitleSpan = document.getElementById('modalDescripcionTitle');
+        const modalBody = document.getElementById('modalDescripcionBody');
 
     modalTitleSpan.textContent = nombre;
     modalBody.innerHTML = 
