@@ -1,6 +1,5 @@
 import { turnos_disponibles, STORAGE_KEY } from './turnos.js';
 import { STORAGE_KEY_RESERVAS } from './reservasData.js';
-import { STORAGE_KEY_TURNOS as STORAGE_KEY } from './turnosData.js';
 
 // Estado local
 let turnos = [];

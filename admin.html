@@ -45,6 +45,7 @@
       <li class="nav-item"><button class="nav-link" data-section="obras">Obras Sociales</button></li>
       <li class="nav-item"><button class="nav-link" data-section="turnos">Turnos</button></li>
       <li class="nav-item"><button class="nav-link" data-section="reservas">Reservas</button></li>
+      <li class="nav-item"><button class="nav-link" data-section="usuarios">Usuarios</button></li>
     </ul>
 
 
@@ -127,45 +128,58 @@
     </section>
 
     <!-- Turnos -->
-    <section id="section-turnos" class="d-none">
-      <h2>Gestión de Turnos</h2>
 
-      <form id="formTurno" class="row g-3 mt-3">
-        <input type="hidden" id="turnoId">
+    <section id="section-turnos" class="mb-4 d-none">
+      <form id="formularioTurnos" class="row g-3">
+        <input type="hidden" id="turnosId" />
 
-        <div class="col-md-4">
-          <label class="form-label">Médico</label>
-          <select id="turnoMedico" class="form-select" required></select>
+        <div class="col-md-6">
+          <label for="nombreTurno" class="form-label">Médico</label>
+          <input id="nombreTurno" name="nombreTurno" type="text" class="form-control" placeholder="Nombre y Apellido"
+            required />
+        </div>
+
+        <div class="col-md-3">
+          <label for="fechaTurno" class="form-label">Fecha</label>
+          <input id="fechaTurno" name="fechaTurno" type="date" class="form-control" />
+        </div>
+
+        <div class="col-md-3">
+          <label for="horarioTurno" class="form-label">Horario</label>
+          <input id="horarioTurno" name="horarioTurno" type="time" class="form-control" />
         </div>
 
         <div class="col-md-4">
-          <label class="form-label">Fecha</label>
-          <input id="turnoFecha" type="date" class="form-control" required>
+          <label for="especialidadTurno" class="form-label">Especialidad</label>
+          <input id="especialidadTurno" name="especialidadTurno" type="text" class="form-control"
+            placeholder="Especialidad" required />
         </div>
 
         <div class="col-md-4">
-          <label class="form-label">Hora</label>
-          <input id="turnoHora" type="time" class="form-control" required>
+          <label for="obrasocialTurno" class="form-label">Obra social</label>
+          <input id="obrasocialTurno" name="obrasocialTurno" type="text" class="form-control"
+            placeholder="Obra social" />
         </div>
 
         <div class="col-12 d-flex gap-2">
-          <button class="btn btn-success" type="submit">Guardar</button>
-          <button class="btn btn-secondary" type="button" id="cancelarTurno">Cancelar</button>
+          <button id="btnGuardar" type="submit" class="btn btn-success">Guardar</button>
+          <button id="btnCancelar" type="button" class="btn btn-secondary">Cancelar</button>
         </div>
       </form>
-
-      <table class="table table-bordered table-striped mt-4">
+      <table class="table table-bordered align-middle mt-4" id="tablaTurnos">
         <thead class="table-success">
           <tr>
-            <th>ID</th>
             <th>Médico</th>
-            <th>Fecha</th>
-            <th>Hora</th>
             <th>Disponible</th>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Especialidad</th>
+            <th class="d-none d-md-table-cell">Obra Social</th>
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody id="tbodyTurnos"></tbody>
+        <tbody id="turnos-tbody">
+        </tbody>
       </table>
     </section>
 
@@ -187,6 +201,17 @@
         </thead>
         <tbody id="tbodyReservas"></tbody>
       </table>
+    </section>
+
+    <!-- Usuarios registrados -->
+    <section id="section-usuarios" class="container mt-4 d-none">
+      <h1>Usuarios registrados</h1>
+      <p class="text-muted">
+        Solo se muestran campos no sensibles: ID, nombre, apellido, edad y género.
+      </p>
+
+      <div id="alertPlaceholder" class="mb-3"></div>
+      <div id="tablaUsuarios" class="table-responsive"></div>
     </section>
 
   </main>
@@ -214,6 +239,8 @@
   <script type="module" src="js/turnosData.js"></script>
   <script type="module" src="js/reservasData.js"></script>
   <script type="module" src="js/reservas.js"></script>
+  <script type="module" src="js/gestionTurnosAdmin.js"></script>
+  <script type="module" src="js/adminUsuarios.js"></script>
 
 
   <script src="js/validarLogin.js"></script>
@@ -221,7 +248,6 @@
     // protegerPaginaAdmin() redirige al login si no hay rol admin
     if (typeof protegerPaginaAdmin === "function") protegerPaginaAdmin();
   </script>
-  <script type="module" src="js/catalogoDinamico.js"></script>
   <script src="js/validarLogin.js"></script>
   <script src="js/navbarLogin.js"></script>
 </body>

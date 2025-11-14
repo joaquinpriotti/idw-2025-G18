@@ -1,5 +1,5 @@
-import { turnos_disponibles, STORAGE_KEY } from './turnos.js';
 import { STORAGE_KEY_TURNOS as STORAGE_KEY } from './turnosData.js';
+import { turnos_disponibles } from './turnos.js';
 
 let logeado = sessionStorage.getItem("usuarioLogeado");
 

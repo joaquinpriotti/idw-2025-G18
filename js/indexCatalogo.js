@@ -1,7 +1,6 @@
 // --- Catálogo de médicos para visitantes (lee desde LocalStorage) ---
 
 import { MEDICO_DATOS_INICIALES, STORAGE_KEY_MEDICOS as STORAGE_KEY } from './medicosData.js';
-import { STORAGE_KEY_TURNOS as STORAGE_KEY } from './turnosData.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     inicializarLocalStorage();
@@ -30,9 +29,9 @@ function renderCatalogo() {
         html += `
             <div class="col-12 col-sm-6 col-lg-4 mb-4">
                 <div class="card h-100 shadow-sm">
-                    <img src="${m.foto || 'img/default.jpg'}" class="card-img-top" alt="${m.nombre}">
+                    <img src="${m.foto || 'img/default.jpg'}" class="card-img-top" alt="${m.medico}">
                     <div class="card-body text-center">
-                        <h5 class="card-title">${m.nombre}</h5>
+                        <h5 class="card-title">${m.medico}</h5>
                         <p class="card-text text-secondary">${m.especialidad}</p>
                     </div>
                 </div>
@@ -114,7 +113,7 @@ function mostrarCatalogo() {
             <div class="card h-100 shadow-sm">
                 <img src="${escapeHtml(m.imagen || "img/Doctor sin foto.jpg")}" class="card-img-top">
                 <div class="card-body text-center">
-                    <h5 class="card-title">${escapeHtml(m.nombre || '')}</h5>
+                    <h5 class="card-title">${escapeHtml(m.medico || '')}</h5>
                     <p class="card-text">${escapeHtml(m.especialidad || '')}</p>
                     <span class="badge bg-primary">${escapeHtml(m.obraSocial || '')}</span>
                 </div>

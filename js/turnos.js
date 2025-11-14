@@ -1,7 +1,7 @@
 export const turnos_disponibles = [
     {
         id: 101,
-        medico: 'Dr. Pérez',
+        medico: 'Pérez Ricardo',
         disponible: "Disponible",
         fecha: '2025-11-12',
         hora: '10:00',
@@ -10,52 +10,52 @@ export const turnos_disponibles = [
     },
     {
         id: 102,
-        medico: 'Dra. López',
+        medico: 'Pérez Ricardo',
         disponible: "Disponible",
         fecha: '2025-11-11',
         hora: '15:30',
-        especialidad: 'Dermatología',
+        especialidad: 'Cardiología',
         obraSocial: 'PAMI'
     },
     {
         id: 103,
-        medico: 'Dr. Gimenez',
+        medico: 'López Ana',
         disponible: "Disponible",
         fecha: '2025-11-12',
         hora: '11:00',
-        especialidad: 'Traumatología',
+        especialidad: 'Pediatría',
         obraSocial: 'Particular'
     },
     {
         id: 104,
-        medico: 'Dr. Pérez',
+        medico: 'López Ana',
         disponible: "Disponible",
         fecha: '2025-11-12',
         hora: '10:00',
-        especialidad: 'Cardiología',
+        especialidad: 'Pediatría',
         obraSocial: 'OSDE'
     },
     {
         id: 105,
-        medico: 'Dra. López',
+        medico: 'Pérez Ricardo',
         disponible: "Disponible",
         fecha: '2025-11-11',
         hora: '15:30',
-        especialidad: 'Dermatología',
+        especialidad: 'Cardiología',
         obraSocial: 'PAMI'
     },
     {
         id: 106,
-        medico: 'Dr. Pérez',
+        medico: 'López Ana',
         disponible: "Disponible",
         fecha: '2025-11-12',
         hora: '11:00',
-        especialidad: 'Cardiología',
+        especialidad: 'Pediatría',
         obraSocial: 'Particular'
     },
     {
         id: 107,
-        medico: 'Dr. Mastrangelo',
+        medico: 'Pérez Ricardo',
         disponible: "Disponible",
         fecha: '2025-11-12',
         hora: '10:00',
@@ -64,16 +64,16 @@ export const turnos_disponibles = [
     },
     {
         id: 108,
-        medico: 'Dra. López',
+        medico: 'López Ana',
         disponible: "Disponible",
         fecha: '2025-11-11',
         hora: '15:30',
-        especialidad: 'Dermatología',
+        especialidad: 'Pediatría',
         obraSocial: 'PAMI'
     },
     {
         id: 109,
-        medico: 'Dr. Pérez',
+        medico: 'Pérez Ricardo',
         disponible: "Disponible",
         fecha: '2025-11-12',
         hora: '11:00',

@@ -166,7 +166,7 @@ function mostrarTabla() {
         const imagenSrc = m.imagen || "img/Doctor sin foto.jpg";
 
         tr.innerHTML = `
-            <td>${escapeHtml(m.apellido)}, ${escapeHtml(m.nombre)}</td>
+            <td>${escapeHtml(m.medico)}</td>
             <td>${escapeHtml(m.matricula)}</td>
             <td>${escapeHtml(especialidadNombre)}</td>
             <td>${escapeHtml(obrasTexto)}</td>
@@ -200,12 +200,11 @@ function onVer(e) {
 
     alert(
         `Médico:\n` +
-        `Nombre: ${m.nombre} ${m.apellido}\n` +
+        `Nombre: ${m.medico}\n` +
         `Matrícula: ${m.matricula}\n` +
         `Especialidad: ${especialidadNombre}\n` +
         `Obras Sociales: ${obrasTexto}\n` +
-        `Valor Consulta: ${valorTexto}\n\n` +
-        `Descripción:\n${m.descripcion || "-"}`
+        `Valor Consulta: ${valorTexto}\n\n`
     );
 }
 
@@ -217,8 +216,7 @@ function onEditar(e) {
     editingId = id;
 
     document.getElementById("medicoId").value = id;
-    document.getElementById("nombreAlta").value = m.nombre;
-    document.getElementById("apellidoAlta").value = m.apellido;
+    document.getElementById("nombreAlta").value = m.medico;
     document.getElementById("matriculaAlta").value = m.matricula;
     document.getElementById("descripcionAlta").value = m.descripcion;
     document.getElementById("valorConsultaAlta").value = m.valorConsulta;
@@ -276,14 +274,13 @@ function archivoABase64(file) {
 }
 
 async function agregarMedico() {
-    const nombre = document.getElementById("nombreAlta").value.trim();
-    const apellido = document.getElementById("apellidoAlta").value.trim();
+    const medico = document.getElementById("nombreAlta").value.trim();
     const matricula = Number(document.getElementById("matriculaAlta").value);
     const especialidadId = Number(document.getElementById("especialidadAlta").value);
     const descripcion = document.getElementById("descripcionAlta").value.trim();
     const valorConsulta = Number(document.getElementById("valorConsultaAlta").value);
 
-    if (!nombre || !apellido || !matricula || !especialidadId || !valorConsulta) {
+    if (!medico || !matricula || !especialidadId || !valorConsulta) {
         alert("Complete los campos obligatorios.");
         return;
     }
@@ -301,8 +298,7 @@ async function agregarMedico() {
 
     const nuevo = {
         id: generarId(),
-        nombre,
-        apellido,
+        medico,
         matricula,
         especialidadId,
         descripcion,
@@ -322,14 +318,13 @@ async function actualizarMedico(id) {
     const index = medicos.findIndex(x => x.id === id);
     if (index === -1) return;
 
-    const nombre = document.getElementById("nombreAlta").value.trim();
-    const apellido = document.getElementById("apellidoAlta").value.trim();
+    const medico = document.getElementById("nombreAlta").value.trim();
     const matricula = Number(document.getElementById("matriculaAlta").value);
     const especialidadId = Number(document.getElementById("especialidadAlta").value);
     const descripcion = document.getElementById("descripcionAlta").value.trim();
     const valorConsulta = Number(document.getElementById("valorConsultaAlta").value);
 
-    if (!nombre || !apellido || !matricula || !especialidadId || !valorConsulta) {
+    if (!medico || !matricula || !especialidadId || !valorConsulta) {
         alert("Complete los campos obligatorios.");
         return;
     }
@@ -347,8 +342,7 @@ async function actualizarMedico(id) {
 
     medicos[index] = {
         ...medicos[index],
-        nombre,
-        apellido,
+        medico,
         matricula,
         especialidadId,
         descripcion,

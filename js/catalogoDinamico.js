@@ -162,7 +162,7 @@ function mostrarCatalogo() {
                 <div class="card h-100 shadow-sm">
                     <img src="${escapeHtml(m.imagen || "img/Doctor sin foto.jpg")}" class="card-img-top">
                     <div class="card-body text-center">
-                        <h5 class="card-title">${escapeHtml(m.nombre || '')}</h5>
+                        <h5 class="card-title">${escapeHtml(m.medico || '')}</h5>
                         <p class="card-text">${escapeHtml(m.especialidad || '')}</p>
                         <span class="badge bg-primary">${escapeHtml(m.obraSocial || '')}</span>
                     </div>
@@ -171,11 +171,8 @@ function mostrarCatalogo() {
                             class="btn btn-outline-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#medicoModal"
-                            data-nombre="${escapeHtml(m.nombre)}"
-                            data-dni="${escapeHtml(m.dni)}"
+                            data-nombre="${escapeHtml(m.medico)}"
                             data-matricula="${escapeHtml(m.matricula)}"
-                            data-especialidad="${escapeHtml(m.especialidad)}"
-                            data-telefono="${escapeHtml(m.telefono)}"
                             data-obrasocial="${escapeHtml(m.obraSocial)}"
                             data-descripcion="${escapeHtml(m.descripcion)}"
                         >
@@ -201,24 +198,18 @@ const medicoModal = document.getElementById('medicoModal');
 medicoModal.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget; 
 
-    const nombre = button.getAttribute('data-nombre');
+    const medico = button.getAttribute('data-nombre');
     const descripcion = button.getAttribute('data-descripcion');
-    const dni = button.getAttribute('data-dni');
     const matricula = button.getAttribute('data-matricula');
-    const especialidad = button.getAttribute('data-especialidad');
-    const telefono = button.getAttribute('data-telefono');
     const obraSocial = button.getAttribute('data-obrasocial');
 
         // Inserta los datos en el contenido del modal
         const modalTitleSpan = document.getElementById('modalDescripcionTitle');
         const modalBody = document.getElementById('modalDescripcionBody');
 
-    modalTitleSpan.textContent = nombre;
+    modalTitleSpan.textContent = medico;
     modalBody.innerHTML = 
-        `<p>DNI: ${dni} <br>
-        MatrÍcula: ${matricula} <br>
-        Especialidad: ${especialidad}<br>
-        Telefono: ${telefono}<br>
+        `<p>MatrÍcula: ${matricula} <br>
         ObraSocial: ${obraSocial}<br><br>
         ${descripcion} </p>`;
 });

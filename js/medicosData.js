@@ -64,8 +64,7 @@ export const MEDICO_DATOS_INICIALES = [
     {
         id: 101,
         matricula: 12345,
-        apellido: 'Pérez',
-        nombre: 'Ricardo',
+        medico: 'Pérez Ricardo',
         especialidadId: 1, // Cardiología
         descripcion: 'Especialista en cardiología con más de 15 años de experiencia. Atiende por la mañana y la tarde.',
         obrasSocialesIds: [1, 2, 6], // OSDE, Swiss, Particular
@@ -76,8 +75,7 @@ export const MEDICO_DATOS_INICIALES = [
     {
         id: 102,
         matricula: 67890,
-        apellido: 'López',
-        nombre: 'Ana',
+        medico: 'Lopez Ana',
         especialidadId: 2, // Pediatría
         descripcion: 'Pediatra especializada en control de crecimiento y desarrollo infantil.',
         obrasSocialesIds: [4, 5, 6], // Galeno, SanCor, Particular

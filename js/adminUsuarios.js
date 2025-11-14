@@ -40,6 +40,7 @@ async function cargarUsuarios() {
                     </tr>
                 </thead>
                 <tbody>
+            </div>
         `;
 
         users.forEach((u, i) => {
