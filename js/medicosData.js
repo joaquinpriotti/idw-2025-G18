@@ -75,7 +75,7 @@ export const MEDICO_DATOS_INICIALES = [
     {
         id: 102,
         matricula: 67890,
-        medico: 'Lopez Ana',
+        medico: 'López Ana',
         especialidadId: 2, // Pediatría
         descripcion: 'Pediatra especializada en control de crecimiento y desarrollo infantil.',
         obrasSocialesIds: [4, 5, 6], // Galeno, SanCor, Particular
