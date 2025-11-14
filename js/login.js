@@ -1,67 +1,102 @@
-const formularioLogin = document.getElementById("login");
-const usuario = document.getElementById("usuario");
-const contraseña = document.getElementById("contraseña");
-const mensaje = document.getElementById("mensaje");
+// Maneja el inicio de sesión local (usuarios.js) y API DummyJSON
+// Guarda el token y el rol del usuario en sessionStorage.
 
+import { usuarios } from './usuarios.js';
 
-function mostrarMensaje(texto, tipo){
-    
-    mensaje.innerHTML = `
-        <div id="mensaje" class="mb-3 margin-top-3">
-            <div class="alert alert-${tipo}" margin-top-3>${texto}</div>
-        </div>
-    `;
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formLogin');
+    const mensaje = document.getElementById('mensaje');
 
-}
+    if (!form) return;
 
-formularioLogin.addEventListener("submit", function(event){
-    event.preventDefault();
-
-    let usuarioImput = usuario.value.trim();
-    let contraseñaimput = contraseña.value.trim();
-
-    const isUsuario = usuarios.find(
-        u => u.usuario === usuarioImput && u.contraseña === contraseñaimput
-    );
-
-    if(isUsuario){
-        sessionStorage.setItem("usuarioLogeado", usuarioImput);
-        mostrarMensaje(`Has ingresado correctamente como ${usuario.value}`, "success")
-        window.location.href = "altaMedicos.html"
-    } else {
-        mostrarMensaje("Usuario o contraseña incorrectas", "danger");
+    // mostrar mensajes
+    function mostrarMensaje(text, tipo = 'info') {
+        mensaje.style.display = 'block';
+        mensaje.className = 'alert text-center'; // reseteo
+        if (tipo === 'success') mensaje.classList.add('alert-success');
+        else if (tipo === 'warning') mensaje.classList.add('alert-warning');
+        else if (tipo === 'danger') mensaje.classList.add('alert-danger');
+        else mensaje.classList.add('alert-info');
+        mensaje.textContent = text;
     }
 
-})
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // <- evita el envío por GET y exposición en URL
 
-function estaLogeado(){
-    const logeado = sessionStorage.getItem("usuarioLogeado");
-    const contenedorBoton = document.getElementById("botonDinamico");
-    
-    if(logeado === "admin" || logeado === "cliente"){
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Cerrar sesión</a></li>`;
-        
-        const otroBoton = document.getElementById("botonDinamico");
-        if (otroBoton) {
-            otroBoton.addEventListener("click", cerrarSesion);
+        const usuario = document.getElementById('usuario').value.trim();
+        const contrasena = document.getElementById('contrasena').value.trim();
+
+        if (!usuario || !contrasena) {
+            mostrarMensaje('Complete todos los campos.', 'warning');
+            return;
         }
-    } else {
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Iniciar sesión</a></li>`;
+
+        // Comprueba usuarios locales (de usuarios.js)
+        const userLocal = usuarios.find(u => {
+            const passProp = u.contrasena ?? u.contraseña ?? u.password ?? null;
+            return u.usuario === usuario && passProp === contrasena;
+        });
+
+        if (userLocal) {
+            // Si el objeto local trae rol, usarlo; si no, decidir por nombre
+            const rol = userLocal.rol || (usuario === 'admin' ? 'admin' : 'cliente');
+            sessionStorage.setItem('accessToken', 'token_local_' + Date.now());
+            sessionStorage.setItem('usuarioLogeado', usuario);
+            sessionStorage.setItem('rol', rol);
+            mostrarMensaje('Inicio de sesión local correcto. Redirigiendo...', 'success');
+            return redirigirPorRol(rol);
+        }
+
+        // DummyJSON auth/login espera { username, password } y devuelve un token (en su API pública).
+        try {
+            mostrarMensaje('Intentando iniciar sesión en servidor...', 'info');
+
+            const resp = await fetch('https://dummyjson.com/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: usuario, password: contrasena })
+            });
+
+            if (!resp.ok) {
+                // muestra mensaje pero no revela detalles
+                mostrarMensaje('Usuario o contraseña inválidos (servidor).', 'danger');
+                return;
+            }
+
+            const data = await resp.json();
+            // DummyJSON devuelve un objeto
+            const token = data.token || data.accessToken || null;
+            if (!token) {
+                mostrarMensaje('Respuesta de autenticación inválida.', 'danger');
+                return;
+            }
+
+            // Guardar token y datos mínimos
+            sessionStorage.setItem('accessToken', token);
+            sessionStorage.setItem('usuarioLogeado', data.username || usuario);
+
+            // Damos rol "admin" solo si el usuario coincide con "admin" o segun criterio propio.
+            const rol = (data.username === 'admin' || usuario === 'admin') ? 'admin' : 'cliente';
+            sessionStorage.setItem('rol', rol);
+
+            mostrarMensaje('Login exitoso. Redirigiendo...', 'success');
+            return redirigirPorRol(rol);
+        } catch (err) {
+            console.error('Error fetch login:', err);
+            mostrarMensaje('Error al comunicarse con el servidor de autenticación.', 'danger');
+        }
+    });
+
+    function redirigirPorRol(rol) {
+        // "redirigiendo" para que el usuario vea el mensaje
+        setTimeout(() => {
+            if (rol === 'admin') {
+                window.location.href = 'admin.html';
+            } else if (rol === 'cliente') {
+                window.location.href = 'turnosCliente.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }, 700);
     }
-}
-
-function cerrarSesion(event){
-
-    event.preventDefault(); 
-    
-    let logeado = sessionStorage.getItem("usuarioLogeado");
-
-    if(logeado === "admin" || logeado === "cliente"){
-        sessionStorage.removeItem("usuarioLogeado");
-        window.location.reload();
-    }
-}
-estaLogeado();
-
+});

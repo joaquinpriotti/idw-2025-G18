@@ -1,42 +1,43 @@
-function estaLogeado() {
-    const logeado = sessionStorage.getItem("usuarioLogeado");
-    const contenedorBoton = document.getElementById("botonDinamico");
-    const contenedorAdmin = document.getElementById("botonAdmin");
+// Funciones de validación y control de sesión
 
-    // ---- Boton login ----
-    if (logeado === "admin" || logeado === "cliente") {
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Cerrar sesión</a></li>`;
+// verifica si hay un usuario logueado y devuelve su estado
+function estaLogeadoYRol() {
+    const accessToken = sessionStorage.getItem("accessToken"); // token de sesión
+    const usuario = sessionStorage.getItem("usuarioLogeado");  // nombre de usuario
+    const rol = sessionStorage.getItem("rol");                  // "admin" o "cliente"
 
-        const otroBoton = document.getElementById("botonDinamico");
-        if (otroBoton) {
-            otroBoton.addEventListener("click", cerrarSesion);
-        }
-    } else {
-        contenedorBoton.innerHTML =
-            `<li class="nav-item"><a id="botonDinamico" class="nav-link" href="login.html">Iniciar sesión</a></li>`;
-    }
+    // Devuelve un objeto con la información actual del usuario
+    return {
+        logeado: !!accessToken && !!usuario, // true si existe token y usuario
+        usuario,
+        rol
+    };
+}
 
-    // ---- Boton adm medicos ----
-    if (contenedorAdmin) {
-        if (logeado === "admin" || logeado === "cliente") {
-            contenedorAdmin.innerHTML =
-                `<li class="nav-item"><a class="nav-link" href="admin.html">Administrar Médicos</a></li>`;
-        } else {
-            contenedorAdmin.innerHTML = "";
-        }
+// Protege páginas de administración (solo accesibles por el admin)
+function protegerPaginaAdmin() {
+    const estado = estaLogeadoYRol();
+
+    // Si no está logueado o no tiene rol admin → redirige
+    if (!(estado.logeado && estado.rol === "admin")) {
+        alert("Acceso restringido. Debe iniciar sesión como administrador.");
+        window.location.href = "login.html";
     }
 }
 
-function cerrarSesion(event) {
-    event.preventDefault();
+// Protege páginas accesibles por cualquier usuario logueado
+function protegerPaginaClienteOPersonal() {
+    const estado = estaLogeadoYRol();
 
-    let logeado = sessionStorage.getItem("usuarioLogeado");
-
-    if (logeado === "admin" || logeado === "cliente") {
-        sessionStorage.removeItem("usuarioLogeado");
-        window.location.reload();
+    // Si no está logueado, redirige al login
+    if (!estado.logeado) {
+        alert("Debe iniciar sesión para acceder.");
+        window.location.href = "login.html";
     }
 }
 
-estaLogeado();
+// Cierra sesión y limpia el almacenamiento de sesión
+function cerrarSesion() {
+    sessionStorage.clear();
+    window.location.href = "login.html";
+}
